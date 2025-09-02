@@ -7,3 +7,8 @@ O projeto consiste em desenvolver um aplicativo mobile para controle de estoque 
 O sistema emitirá alertas inteligentes em situações críticas, como falta de itens, proximidade da validade ou produtos de alta demanda. Nesses casos, um agente de inteligência artificial (LLM) entrará em contato com redes de distribuição previamente cadastradas, fará a comparação de preços e deixará um pedido pré-preparado, cabendo ao usuário apenas revisar e confirmar.
 
 A proposta traz praticidade, economia e eficiência para pequenos e médios mercados, que muitas vezes não têm acesso a sistemas de gestão sofisticados.
+
+### Para rodar o código:
+- pip install -r requirements.txt
+- Fazer num file .env (trocando user e password pelo seu): DATABASE_URL = "postgresql+psycopg2://user:password@localhost:5432/controle_estoque"
+- Checar .env.example
