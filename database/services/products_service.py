@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from ..models.products import Product
+from barcode_scanner import scanner
 
 # Criar novo produto
 def create_product(db: Session, user_idF: str, **data):
@@ -11,7 +12,7 @@ def create_product(db: Session, user_idF: str, **data):
 
 # Listar todos os produtos (opcionalmente filtrar por nome ou marca)
 def list_products(db: Session, user_id: str, search: str = None):
-    query = db.query(Product).filter(Product.user_id == user_id)
+    query = db.query(Product).filter(Product.user_idF == user_id)
     if search:
         search = f"%{search.lower()}%"
         query = query.filter(Product.name.ilike(search) | Product.brand.ilike(search))
@@ -19,11 +20,11 @@ def list_products(db: Session, user_id: str, search: str = None):
 
 # Pegar produto por código de barras
 def get_by_barcode(db: Session, barcode: str, user_id: str):
-    return db.query(Product).filter(Product.barcode == barcode, Product.user_id == user_id).first()
+    return db.query(Product).filter(Product.barcode == barcode, Product.user_idF == user_id).first()
 
 # Pegar produto por ID
 def get_product_by_id(db: Session, product_id: str, user_id: str):
-    return db.query(Product).filter(Product.id == product_id, Product.user_id == user_id).first()
+    return db.query(Product).filter(Product.id == product_id, Product.user_idF == user_id).first()
 
 # UPDATE um produto existente
 def update_product(db: Session, product_id: str, user_id: str, **data):
@@ -55,3 +56,19 @@ def is_below_minimum_stock(db: Session, product_id: str, user_id: str):
     if not product:
         return None  # Produto não encontrado
     return product.current_quantity < product.minimum_stock
+
+
+def get_product_by_scanner(db: Session, user_idF: str):
+    barcode = scanner.get_barcode()
+    if barcode:
+        produto = get_by_barcode(db, barcode, user_idF)
+        if produto:
+            print(f"Produto: {produto.brand} {produto.name} {produto.package_quantity}{produto.unit}")
+            print(f"Id: {produto.id}")
+            return produto
+        else:
+            print("Produto não encontrado.")
+            return False
+    else:
+        print("Nenhum código foi lido.")
+    return None

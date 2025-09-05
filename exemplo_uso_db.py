@@ -5,6 +5,8 @@ from database.models import *
 from database.services import *
 from config import ENV
 
+
+
 if ENV != "development":
     raise EnvironmentError("Este script não deve ser executado em ambiente de produção.")
 
@@ -49,5 +51,7 @@ new_movement = create_movement(
 )
 
 print("Dados de teste inseridos com sucesso na tabela tamporária!")
+
+barcode = get_product_by_scanner(db, new_user.id)
 
 db.close()
