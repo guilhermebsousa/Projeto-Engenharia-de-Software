@@ -1,7 +1,11 @@
 import os
+import sys
 import openai
 from sqlalchemy.orm import Session
 from sqlalchemy import text
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from database.session import SessionLocal
 from database.models.products import Product
 from typing import List, Dict, Any
