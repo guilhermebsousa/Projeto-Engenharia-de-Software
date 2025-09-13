@@ -31,8 +31,6 @@ def create_movement(db: Session, user_idF: str, product_idF: str, quantity: int,
         type=type,
         purchase_price=purchase_price,
         sale_price=sale_price,
-        origin=origin,
-        destination=destination,
         note=note,
         expiration_date=expiration_date
     )
