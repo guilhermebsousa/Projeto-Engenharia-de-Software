@@ -8,9 +8,7 @@ import enum
 class MovementType(enum.Enum):
     IN = "IN"                    # entrada
     OUT = "OUT"                  # saida
-    # TRANSFER = "TRANSFER"        # transferencia
     LOSS = "LOSS"                # perda
-    # SALE = "SALE"                # venda
 
 class Movement(Base):
     __tablename__ = "stock_movements"
@@ -23,8 +21,6 @@ class Movement(Base):
     purchase_price = Column(Float)
     # margin_pct = Column(Float) # Margem de lucro em porcentagem - usar???
     sale_price = Column(Float) 
-    origin = Column(String) # Local de origem (para transferências)
-    destination = Column(String) # Local de destino (para transferências)
     note = Column(Text) # Observações adicionais
     expiration_date = Column(DateTime) # Validade do lote movimentado
     created_at = Column(DateTime(timezone=True), server_default=func.now())

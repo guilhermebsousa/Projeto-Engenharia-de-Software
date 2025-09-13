@@ -8,7 +8,6 @@ import enum
 class RoleEnum(enum.Enum):
     ADMIN = "ADMIN"          # Pode tudo, gerencia usuários, produtos e relatórios -> dono do aplicativo
     OPERATOR = "OPERATOR"    # Pode movimentar estoque, cadastrar produtos, mas não gerencia usuários -> empresa
-    VIEWER = "VIEWER"        # ------------ Apenas consulta dados, não pode alterar nada -> talvez não precise na aplicação
 
 class User(Base):
     __tablename__ = "users"
