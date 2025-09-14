@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>sTOK — Inicial</title>
+
+  <!-- Fonte Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS base (mesma origem :8000) -->
+  <link rel="stylesheet" href="/styles.css" />
+
+  <style>
+    /* ===== Estilos específicos desta página ===== */
+
+    .brand__name { font-size: 20px; }
+
+    .icon-actions {
+      display: inline-flex; align-items: center; gap: 10px; position: relative;
+    }
+    .icon-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border-radius: 12px;
+      border: 1px solid var(--card-border);
+      background: var(--card); color: var(--text);
+      box-shadow: var(--shadow); cursor: pointer;
+      transition: transform .08s ease, background .2s ease, border-color .2s ease;
+    }
+    .icon-btn:active { transform: translateY(1px); }
+    .icon-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+    .icon-24 { width: 22px; height: 22px; }
+
+    .settings-menu { position: absolute; top: 56px; right: 0; width: min(300px, 92vw); }
+    .dropdown .item-row {
+      display: flex; align-items: center; gap: 10px; padding: 12px;
+      border-radius: 10px; color: var(--text); text-decoration: none;
+      font-weight: 500; user-select: none;
+    }
+    .dropdown .item-row:hover { background: rgba(255,255,255,.06); }
+    .item-icon { width: 18px; height: 18px; opacity: .9; }
+    .item-text { display: grid; line-height: 1.2; }
+    .item-text small { color: var(--muted); font-weight: 400; }
+    .item-disabled { opacity: .6; pointer-events: none; }
+    .item-badge { margin-left: auto; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: rgba(255,255,255,.08); color: var(--muted); }
+
+    main { padding: 24px; padding-top: 96px; display: grid; gap: 24px; }
+    .cards-grid {
+      margin: 0 auto; width: 100%; max-width: 1100px; display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px;
+    }
+    @media (max-width: 1024px) { .cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 540px) { .cards-grid { grid-template-columns: 1fr; } }
+
+    .app-card {
+      display: flex; flex-direction: column; justify-content: space-between; gap: 12px;
+      padding: 18px; border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid var(--card-border); box-shadow: var(--shadow);
+      color: var(--text); text-decoration: none; min-height: 140px;
+      transition: transform .08s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .app-card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,.2); box-shadow: 0 16px 28px rgba(0,0,0,.35); }
+
+    .app-card .app-icon {
+      width: 28px; height: 28px; border-radius: 10px; display: inline-flex;
+      align-items: center; justify-content: center; padding: 8px;
+      background: linear-gradient(90deg, var(--brand1), var(--brand2));
+      color: #0d1a13; box-shadow: 0 8px 18px rgba(72,215,127,.25);
+    }
+    .app-card h3 { margin: 4px 0 2px; font-size: 18px; font-weight: 600; }
+    .app-card p { color: var(--muted); margin: 0; font-size: 14px; }
+
+    .user-tag { color: var(--muted); font-size: 12px; margin-right: 8px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- Top bar -->
+    <header class="topbar" aria-label="Barra superior">
+      <div class="brand" aria-label="Logo eSTOK">
+        <span class="brand__name">eSTOK</span>
+        <span class="brand__pill">Beta</span>
+      </div>
+
+      <div class="icon-actions">
+        <span id="whoami" class="user-tag" aria-live="polite">Carregando…</span>
+
+        <!-- Sino de notificações (placeholder) -->
+        <button class="icon-btn" id="btnBell" aria-label="Notificações" title="Notificações">
+          <svg class="icon-24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Zm7-6V11a7 7 0 0 0-14 0v5l-2 2v1h18v-1l-2-2Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <!-- Engrenagem de configurações -->
+        <button class="icon-btn" id="btnSettings" aria-haspopup="true" aria-expanded="false" aria-controls="settingsMenu" title="Configurações">
+          <svg class="icon-24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm8.94-3.1a7.97 7.97 0 0 0 0-.8l2.02-1.58a.5.5 0 0 0 .12-.64l-1.9-3.3a.5.5 0 0 0-.6-.22l-2.38.96c-.22-.12-.45-.24-.68-.4l-.36-2.55a.5.5 0 0 0-.5-.42h-3.8a.5.5 0 0 0-.5.42l-.36 2.55c-.23.1-.45.22-.68.35l-2.38-.96a.5.5 0 0 0-.6.22l-1.9 3.3a.5.5 0 0 0 .12.64L3.06 11.6c-.02.26-.02.53 0 .8l-2.02 1.58a.5.5 0 0 0-.12.64l1.9 3.3a.5.5 0 0 0 .6.22l2.38-.96c.22.14.45.26.68.36l.36 2.55a.5.5 0 0 0 .5.42h3.8a.5.5 0 0 0 .5-.42l.36-2.55c.23-.1.45-.22.68-.36l2.38.96a.5.5 0 0 0 .6-.22l1.9-3.3a.5.5 0 0 0-.12-.64L20.94 12.4Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <!-- Menu de configurações -->
+        <nav class="dropdown settings-menu" id="settingsMenu" data-open="false" role="menu" aria-label="Menu de configurações">
+          <!-- Administrar usuários (bloqueado) -->
+          <div class="item-row item-disabled" role="menuitem" aria-disabled="true" tabindex="-1" title="Função bloqueada">
+            <svg class="item-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M16 11V8a4 4 0 1 0-8 0v3M6 11h12v9H6v-9Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="item-text">
+              Administrar usuários
+              <small>Restrito</small>
+            </span>
+            <span class="item-badge">🔒</span>
+          </div>
+
+          <!-- Reportar problema -->
+          <a href="#" class="item-row" role="menuitem" tabindex="0">
+            <svg class="item-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="item-text">
+              Reportar problema
+              <small>Envie um feedback</small>
+            </span>
+          </a>
+
+          <!-- Ajuste de tema -->
+          <a href="#" class="item-row" role="menuitem" tabindex="0">
+            <svg class="item-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="item-text">
+              Ajuste de tema
+              <small>Claro/escuro</small>
+            </span>
+          </a>
+
+          <!-- Idioma -->
+          <a href="#" class="item-row" role="menuitem" tabindex="0">
+            <svg class="item-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 5h16M4 12h16M4 19h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="item-text">
+              Idioma
+              <small>PT • EN • ES</small>
+            </span>
+          </a>
+
+          <!-- Sair -->
+          <button class="item-row" id="btnLogout" role="menuitem" tabindex="0" style="width:100%; background:none; border:none; text-align:left; cursor:pointer;">
+            <svg class="item-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M16 17l5-5-5-5M21 12H9M12 19a7 7 0 1 1 0-14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="item-text">
+              Sair
+              <small>Encerrar sessão</small>
+            </span>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main aria-label="Ações rápidas">
+      <div class="cards-grid">
+        <!-- Cadastro de produto -->
+        <a class="app-card" href="/cadastro.html">
+          <span class="app-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="icon-24" fill="none">
+              <path d="M12 5v14M5 12h14" stroke="#0d1a13" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <div>
+            <h3>Cadastro de produto</h3>
+            <p>Inclua novos itens no estoque.</p>
+          </div>
+        </a>
+
+        <!-- Venda / Retirada de produto -->
+        <a class="app-card" href="/venda_retirada.html">
+          <span class="app-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="icon-24" fill="none">
+              <path d="M3 7h18l-2 10H5L3 7Zm5 10v2a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <div>
+            <h3>Venda / Retirada</h3>
+            <p>Baixa rápida de produtos.</p>
+          </div>
+        </a>
+
+        <!-- Relatórios e Dashboards -->
+        <a class="app-card" href="/relatorio.html">
+          <span class="app-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="icon-24" fill="none">
+              <path d="M4 19V5m5 14V10m5 9V7m5 12V3" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <div>
+            <h3>Relatórios & Dashboards</h3>
+            <p>Métricas e histórico do estoque.</p>
+          </div>
+        </a>
+
+        <!-- Chatbot -->
+        <a class="app-card" href="/chatbot.html">
+          <span class="app-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="icon-24" fill="none">
+              <path d="M21 15a4 4 0 0 1-4 4H9l-4 3v-3a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4h12a4 4 0 0 1 4 4v8Z" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <div>
+            <h3>Chatbot</h3>
+            <p>Atalhos e assistência ao operador.</p>
+          </div>
+        </a>
+      </div>
+    </main>
+
+    <footer class="footer">© 2025 sTOK — Todos os direitos reservados.</footer>
+  </div>
+
+  <script>
+    // ===== Sessão e base da API =====
+    const API_BASE = window.location.origin; // mesma origem (:8000)
+    const user = JSON.parse(sessionStorage.getItem('stokUser') || 'null');
+    if (!user) { window.location.href = '/index.html'; }
+    document.getElementById('whoami').textContent = `Conectado como ${user.username} (${user.role})`;
+
+    // ===== Menu de configurações =====
+    (function(){
+      const btnSettings = document.getElementById('btnSettings');
+      const menu = document.getElementById('settingsMenu');
+
+      function setOpen(open){
+        menu.dataset.open = open ? "true" : "false";
+        btnSettings.setAttribute('aria-expanded', open ? "true" : "false");
+      }
+
+      btnSettings.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setOpen(menu.dataset.open !== "true");
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!menu.contains(e.target) && e.target !== btnSettings) setOpen(false);
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') setOpen(false);
+      });
+
+      // Sair
+      document.getElementById('btnLogout').addEventListener('click', () => {
+        sessionStorage.removeItem('stokUser');
+        window.location.href = '/index.html';
+      });
+    })();
+
+    // Sino (placeholder)
+    document.getElementById('btnBell').addEventListener('click', () => {
+      alert('Central de notificações em breve.');
+    });
+  </script>
+</body>
+</html>

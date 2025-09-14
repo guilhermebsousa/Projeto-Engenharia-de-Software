@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>sTOK — Cadastro de Produto</title>
+
+  <!-- Fonte Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS base -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    /* ===== Estilos específicos desta página ===== */
+
+    /* Layout base desta página (rodapé embaixo sempre) */
+    .wrap { min-height: 100vh; display: flex; flex-direction: column; }
+    main { flex: 1; display: grid; gap: 24px; padding: 24px; padding-top: 96px; }
+    .footer { text-align: center; font-size: 14px; color: var(--muted); padding: 20px 16px; border-top: 1px solid var(--card-border); }
+
+    /* Topbar: grupo com voltar + logo à esquerda */
+    .left-group { display: inline-flex; align-items: center; gap: 10px; }
+    .back-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border-radius: 12px;
+      border: 1px solid var(--card-border); background: var(--card); color: var(--text);
+      box-shadow: var(--shadow); cursor: pointer; transition: transform .08s ease;
+      font-family: 'Poppins', sans-serif;
+    }
+    .back-btn:active { transform: translateY(1px); }
+    .icon-24 { width: 20px; height: 20px; }
+
+    .page-title {
+      margin: 0 auto; width: 100%; max-width: 1100px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .page-title h1 { margin: 0; font-size: clamp(22px, 2.4vw + 14px, 28px); font-weight: 600; }
+    .page-title p { margin: 6px 0 0; color: var(--muted); }
+
+    /* Cards de opção */
+    .cards-grid {
+      margin: 0 auto; width: 100%; max-width: 1100px;
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px;
+    }
+    @media (max-width: 1024px) { .cards-grid { grid-template-columns: 1fr; } }
+
+    .app-card {
+      display: flex; flex-direction: column; gap: 10px; min-height: 140px;
+      padding: 18px; border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid var(--card-border); box-shadow: var(--shadow); color: var(--text);
+      text-decoration: none; transition: transform .08s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .app-card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,.2); box-shadow: 0 16px 28px rgba(0,0,0,.35); }
+    .app-card .app-icon {
+      width: 28px; height: 28px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; padding: 8px;
+      background: linear-gradient(90deg, var(--brand1), var(--brand2)); color: #0d1a13; box-shadow: 0 8px 18px rgba(72,215,127,.25);
+    }
+    .app-card h3 { margin: 4px 0 2px; font-size: 18px; font-weight: 600; }
+    .app-card p { color: var(--muted); margin: 0; font-size: 14px; }
+
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+    .btn { font-family: 'Poppins', sans-serif; font-weight: 700; }
+
+    /* Painéis de conteúdo */
+    .panel {
+      margin: 0 auto; width: 100%; max-width: 900px; padding: 18px;
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid var(--card-border); box-shadow: var(--shadow);
+      display: none;
+    }
+    .panel.open { display: block; }
+
+    .field-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .field-3col { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; }
+    .field-4col { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 12px; }
+    @media (max-width: 760px)  { .field-4col { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 520px)  { .field-3col, .field-4col { grid-template-columns: 1fr; } }
+
+    /* Modal do leitor (câmera) */
+    .modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,.55); z-index: 200; padding: 16px; }
+    .modal[aria-hidden="false"] { display: flex; }
+    .modal-card {
+      width: min(720px, 96vw); border-radius: var(--radius); background: #0e1a14;
+      border: 1px solid var(--card-border); box-shadow: 0 20px 40px rgba(0,0,0,.5); padding: 16px;
+    }
+    .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .modal-title { font-size: 18px; font-weight: 600; margin: 0; }
+    .modal-actions { display: flex; gap: 8px; }
+    .video-wrap { background: #0a140f; border: 1px solid var(--card-border); border-radius: 12px; padding: 8px; }
+    video { width: 100%; max-height: 44vh; border-radius: 10px; display: block; background: #000; }
+
+    .hint { color: var(--muted); font-size: 14px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- Top bar -->
+    <header class="topbar" aria-label="Barra superior">
+      <div class="left-group">
+        <button class="back-btn" id="btnBack" title="Voltar para inicial">
+          <svg class="icon-24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <div class="brand" aria-label="Logo sTOCK">
+          <span class="brand__name">sTOCK</span>
+          <span class="brand__pill">Beta</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main>
+      <div class="page-title">
+        <div>
+          <h1>Cadastro de Produto</h1>
+          <p>Cadastre por leitor, código manual ou formulário completo. Códigos repetidos são permitidos.</p>
+        </div>
+      </div>
+
+      <!-- Cards de opções -->
+      <section class="cards-grid" aria-label="Opções de cadastro">
+        <!-- Opção 1: Leitor (câmera) -->
+        <div class="app-card">
+          <span class="app-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="icon-24" fill="none">
+              <path d="M3 7h18M3 17h18M7 7v10M17 7v10" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <h3>Usar leitor de código de barras</h3>
+          <p>Abra a câmera, informe quantidade e preço e preencha o formulário.</p>
+          <div class="btn-row">
+            <button class="btn" id="btnAbrirLeitor" type="button">Abrir leitor</button>
+          </div>
+        </div>
+
+        <!-- Opção 2: Inserir código manual -->
+        <div class="app-card">
+          <span class="app-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="icon-24" fill="none">
+              <path d="M4 17h16M4 7h8M4 12h12" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <h3>Inserir código de barras manualmente</h3>
+          <p>Digite o código, quantidade e preço e preencha automaticamente.</p>
+          <div class="btn-row">
+            <button class="btn" id="btnAbrirManual" type="button">Inserir código</button>
+          </div>
+        </div>
+
+        <!-- Opção 3: Preencher todas as informações -->
+        <div class="app-card">
+          <span class="app-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="icon-24" fill="none">
+              <path d="M4 20h16M7 4h10a2 2 0 0 1 2 2v10l-4 4H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <h3>Cadastrar manualmente todas as infos</h3>
+          <p>Informe nome, validade, preço e quantidade.</p>
+          <div class="btn-row">
+            <button class="btn" id="btnAbrirCompleto" type="button">Abrir formulário</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Painel 2: Código manual (com quantidade e preço) -->
+      <section class="panel" id="panelManual" aria-labelledby="tituloManual">
+        <h2 id="tituloManual" style="margin-top:0;">Inserir código manualmente</h2>
+        <form id="formCodigo" autocomplete="off">
+          <div class="field-4col">
+            <div class="field">
+              <label for="codigoBarras">Código de barras</label>
+              <input id="codigoBarras" name="codigoBarras" type="text" placeholder="Ex.: 7891234567890" inputmode="numeric" />
+            </div>
+            <div class="field">
+              <label for="qtdManual">Quantidade</label>
+              <input id="qtdManual" name="qtdManual" type="number" min="1" step="1" value="1" />
+            </div>
+            <div class="field">
+              <label for="precoManual">Preço</label>
+              <input id="precoManual" name="precoManual" type="number" step="0.01" inputmode="decimal" placeholder="Ex.: 1999.90" />
+            </div>
+            <div class="field">
+              <label for="validadeManual">Validade (opcional)</label>
+              <input id="validadeManual" name="validadeManual" type="date" />
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn" type="submit">Preencher formulário</button>
+            <button class="btn" type="button" id="btnFecharManual">Fechar</button>
+          </div>
+          <p class="hint">Ao enviar, abriremos o formulário completo com esses dados preenchidos.</p>
+        </form>
+      </section>
+
+      <!-- Painel 3: Formulário completo (com quantidade e preço) -->
+      <section class="panel" id="panelCompleto" aria-labelledby="tituloCompleto">
+        <h2 id="tituloCompleto" style="margin-top:0;">Cadastrar produto (completo)</h2>
+        <form id="formCompleto" autocomplete="on" novalidate>
+          <div class="field">
+            <label for="nomeProduto">Nome do produto</label>
+            <input id="nomeProduto" name="nomeProduto" type="text" placeholder="Ex.: Smartphone XYZ 128GB" required />
+          </div>
+
+          <div class="field-3col">
+            <div class="field">
+              <label for="codigoCompleto">Código de barras (opcional)</label>
+              <input id="codigoCompleto" name="codigoCompleto" type="text" placeholder="Ex.: 7891234567890" inputmode="numeric" />
+            </div>
+            <div class="field">
+              <label for="validade">Data de validade</label>
+              <input id="validade" name="validade" type="date" />
+            </div>
+            <div class="field">
+              <label for="quantidade">Quantidade</label>
+              <input id="quantidade" name="quantidade" type="number" min="1" step="1" value="1" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="preco">Preço</label>
+            <input id="preco" name="preco" type="number" step="0.01" inputmode="decimal" placeholder="Ex.: 1999.90" />
+          </div>
+
+          <div class="btn-row">
+            <button class="btn" type="submit">Salvar produto</button>
+            <button class="btn" type="button" id="btnFecharCompleto">Fechar</button>
+          </div>
+          <p class="hint">Você pode cadastrar vários itens com o mesmo código; diferencie por validade/lote se necessário.</p>
+        </form>
+      </section>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="footer">
+      © 2025 sTOK — Todos os direitos reservados.
+    </footer>
+  </div>
+
+  <!-- Modal: Leitor de código de barras (câmera) -->
+  <div class="modal" id="modalLeitor" aria-hidden="true" aria-labelledby="tituloLeitor" role="dialog">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 class="modal-title" id="tituloLeitor">Leitor de código de barras</h3>
+        <div class="modal-actions">
+          <button class="btn" id="btnFecharLeitor" type="button">Fechar</button>
+        </div>
+      </div>
+
+      <div class="video-wrap">
+        <!-- IMPORTANTE: autoplay + playsinline + muted (iOS) -->
+        <video id="video" playsinline autoplay muted></video>
+      </div>
+
+      <!-- Campos para pré-preencher via leitor -->
+      <form id="formLeitor" class="panel open" style="margin-top:12px; padding:12px;">
+        <div class="field-4col">
+          <div class="field">
+            <label for="codigoLeitor">Código de barras</label>
+            <input id="codigoLeitor" name="codigoLeitor" type="text" placeholder="Preenchido ao ler / editável" />
+          </div>
+          <div class="field">
+            <label for="qtdLeitor">Quantidade</label>
+            <input id="qtdLeitor" name="qtdLeitor" type="number" min="1" step="1" value="1" />
+          </div>
+          <div class="field">
+            <label for="precoLeitor">Preço</label>
+            <input id="precoLeitor" name="precoLeitor" type="number" step="0.01" inputmode="decimal" placeholder="Ex.: 1999.90" />
+          </div>
+          <div class="field">
+            <label for="validadeLeitor">Validade (opcional)</label>
+            <input id="validadeLeitor" name="validadeLeitor" type="date" />
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn" type="submit">Preencher formulário</button>
+        </div>
+        <p class="hint">Após ler o código, ajuste quantidade/preço e clique em “Preencher formulário”.</p>
+      </form>
+
+      <p class="hint">A leitura/decodificação será integrada depois (ZXing/QuaggaJS). O código pode ser preenchido automaticamente no campo acima.</p>
+    </div>
+  </div>
+
+  <script>
+    // --- Navegação: voltar para inicial ---
+    document.getElementById('btnBack').addEventListener('click', () => {
+      window.location.href = 'inicial.html';
+    });
+
+    // --- Toggles de painéis ---
+    const panelManual = document.getElementById('panelManual');
+    const panelCompleto = document.getElementById('panelCompleto');
+
+    document.getElementById('btnAbrirManual').addEventListener('click', () => {
+      panelCompleto.classList.remove('open');
+      panelManual.classList.add('open');
+      document.getElementById('codigoBarras').focus();
+    });
+    document.getElementById('btnFecharManual').addEventListener('click', () => {
+      panelManual.classList.remove('open');
+    });
+
+    document.getElementById('btnAbrirCompleto').addEventListener('click', () => {
+      panelManual.classList.remove('open');
+      panelCompleto.classList.add('open');
+      document.getElementById('nomeProduto').focus();
+    });
+    document.getElementById('btnFecharCompleto').addEventListener('click', () => {
+      panelCompleto.classList.remove('open');
+    });
+
+    // ---------- LEITOR (CÂMERA) ----------
+    const modalLeitor = document.getElementById('modalLeitor');
+    const videoEl = document.getElementById('video');
+    let streamRef = null;
+
+    function stopStream() {
+      if (streamRef) { try { streamRef.getTracks().forEach(t => t.stop()); } catch(_) {} streamRef = null; }
+      try { videoEl.pause(); videoEl.srcObject = null; } catch(_) {}
+    }
+
+    async function getBackCameraDeviceId() {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const videos = devices.filter(d => d.kind === 'videoinput');
+      if (videos.length === 0) return null;
+      const backLike = videos.find(d => /back|traseira|rear|environment/i.test(d.label || ''));
+      return (backLike || videos[videos.length - 1]).deviceId;
+    }
+
+    async function openWithConstraints(constraints) {
+      stopStream();
+      const s = await navigator.mediaDevices.getUserMedia(constraints);
+      streamRef = s;
+      videoEl.srcObject = s;
+      try { await videoEl.play(); } catch(_) {}
+    }
+
+    async function abrirLeitor() {
+      if (!('mediaDevices' in navigator) || !('getUserMedia' in navigator.mediaDevices)) {
+        alert('Seu navegador não suporta captura de câmera.');
+        return;
+      }
+      const isLocalhost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+      if (location.protocol !== 'https:' && !isLocalhost) {
+        alert('Para acessar a câmera é preciso usar HTTPS (ou rodar em localhost).');
+        return;
+      }
+
+      modalLeitor.setAttribute('aria-hidden', 'false');
+
+      try { // 1) environment ideal
+        await openWithConstraints({ video: { facingMode: { ideal: 'environment' } }, audio: false });
+        return;
+      } catch(e1) { console.warn('fallback 1', e1); }
+
+      try { // 2) environment string
+        await openWithConstraints({ video: { facingMode: 'environment' }, audio: false });
+        return;
+      } catch(e2) { console.warn('fallback 2', e2); }
+
+      try { // 3) permissão mínima + escolher deviceId traseiro
+        await openWithConstraints({ video: true, audio: false });
+        stopStream();
+        const backId = await getBackCameraDeviceId();
+        if (backId) {
+          await openWithConstraints({ video: { deviceId: { exact: backId } }, audio: false });
+          return;
+        }
+      } catch(e3) { console.warn('fallback 3', e3); }
+
+      try { // 4) qualquer câmera
+        await openWithConstraints({ video: true, audio: false });
+        return;
+      } catch(e4) {
+        console.error('Não foi possível abrir a câmera:', e4);
+        alert('Não foi possível acessar a câmera. Verifique permissões do navegador.');
+        fecharLeitor();
+      }
+    }
+
+    function fecharLeitor() {
+      modalLeitor.setAttribute('aria-hidden', 'true');
+      stopStream();
+    }
+
+    document.getElementById('btnAbrirLeitor').addEventListener('click', abrirLeitor);
+    document.getElementById('btnFecharLeitor').addEventListener('click', fecharLeitor);
+    modalLeitor.addEventListener('click', (e) => { if (e.target === modalLeitor) fecharLeitor(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalLeitor.getAttribute('aria-hidden') === 'false') fecharLeitor(); });
+
+    // --- Fluxo: inserir código manual e "preencher" (com qtd e preço) ---
+    document.getElementById('formCodigo').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const code = (document.getElementById('codigoBarras').value || '').trim();
+      const qtd  = Math.max(1, parseInt(document.getElementById('qtdManual').value || '1', 10));
+      const preco = parseFloat(document.getElementById('precoManual').value || '0') || 0;
+      const val  = (document.getElementById('validadeManual').value || '');
+
+      if (!code) { alert('Digite um código de barras.'); return; }
+
+      // Abre formulário completo com dados
+      panelManual.classList.remove('open');
+      panelCompleto.classList.add('open');
+
+      document.getElementById('codigoCompleto').value = code;
+      document.getElementById('quantidade').value = qtd;
+      document.getElementById('preco').value = preco ? preco.toFixed(2) : '';
+      if (val) document.getElementById('validade').value = val;
+
+      if (!document.getElementById('nomeProduto').value) {
+        document.getElementById('nomeProduto').value = 'Produto ' + code.slice(-4);
+      }
+
+      alert(`Código ${code} preparado com quantidade ${qtd} e preço ${preco ? preco.toFixed(2) : '—'}. Ajuste e salve.`);
+    });
+
+    // --- Fluxo: leitor envia para o formulário (com qtd e preço) ---
+    document.getElementById('formLeitor').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const code = (document.getElementById('codigoLeitor').value || '').trim();
+      const qtd  = Math.max(1, parseInt(document.getElementById('qtdLeitor').value || '1', 10));
+      const preco = parseFloat(document.getElementById('precoLeitor').value || '0') || 0;
+      const val  = (document.getElementById('validadeLeitor').value || '');
+
+      if (!code) { alert('Informe o código lido.'); return; }
+
+      fecharLeitor();
+      panelCompleto.classList.add('open');
+      document.getElementById('codigoCompleto').value = code;
+      document.getElementById('quantidade').value = qtd;
+      document.getElementById('preco').value = preco ? preco.toFixed(2) : '';
+      if (val) document.getElementById('validade').value = val;
+
+      if (!document.getElementById('nomeProduto').value) {
+        document.getElementById('nomeProduto').value = 'Produto ' + code.slice(-4);
+      }
+    });
+
+    // ===========================
+    //  INTEGRAÇÃO REAL COM API
+    // ===========================
+    const API_BASE = window.location.origin;
+    const user = JSON.parse(sessionStorage.getItem('stokUser') || 'null');
+    if (!user) window.location.href = '/index.html';
+
+    function toISODateOrNull(d) {
+      if (!d) return null;
+      return new Date(d + 'T00:00:00').toISOString();
+    }
+
+    async function criarProduto(payload) {
+      const url = `${API_BASE}/api/users/${user.id}/products`;
+      const r = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!r.ok) {
+        const t = await r.text().catch(()=> '');
+        throw new Error(`Falha ao criar produto (${r.status}). ${t}`);
+      }
+      return r.json();
+    }
+
+    async function lancarMovimentacaoEntrada({ product_idF, quantity, purchase_price, expiration_date, note }) {
+      const url = `${API_BASE}/api/users/${user.id}/movements`;
+      const r = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json' },
+        body: JSON.stringify({
+          product_idF,
+          type: 'IN',
+          quantity,
+          purchase_price,
+          sale_price: null,
+          note: note || 'Entrada inicial via cadastro',
+          expiration_date
+        })
+      });
+      if (!r.ok) {
+        const t = await r.text().catch(()=> '');
+        throw new Error(`Falha ao lançar movimentação (${r.status}). ${t}`);
+      }
+      return r.json();
+    }
+
+    // --- Salvar produto (REAL) ---
+    document.getElementById('formCompleto').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const nome      = document.getElementById('nomeProduto').value.trim();
+      const codigo    = (document.getElementById('codigoCompleto').value || '').trim();
+      const validade  = document.getElementById('validade').value || '';
+      const qtd       = Math.max(1, parseInt(document.getElementById('quantidade').value || '1', 10));
+      const preco     = parseFloat(document.getElementById('preco').value || '0') || 0;
+
+      if (!nome) { alert('Informe o nome do produto.'); return; }
+
+      // ProductIn exige "unit". Usaremos 'un' por padrão.
+      const productPayload = {
+        barcode: codigo || String(Date.now()),
+        name: nome,
+        brand: null,
+        unit: 'un',
+        package_quantity: null,
+        minimum_stock: 0,
+        suggested_price: preco || null,
+        current_quantity: 0, // será ajustado via movimentação
+        expiration_date: toISODateOrNull(validade)
+      };
+
+      try {
+        // 1) Cria o produto
+        const produto = await criarProduto(productPayload);
+
+        // 2) Lança ENTRADA no estoque
+        await lancarMovimentacaoEntrada({
+          product_idF: produto.id,
+          quantity: qtd,
+          purchase_price: preco || 0,
+          expiration_date: toISODateOrNull(validade),
+          note: `Entrada inicial do produto "${produto.name}"`
+        });
+
+        alert('Produto cadastrado e estoque lançado com sucesso!');
+        e.target.reset();
+        // Opcional: redirecionar para o relatório
+        // window.location.href = '/inicial.html';
+      } catch (err) {
+        console.error(err);
+        alert(err.message || 'Erro ao salvar produto.');
+      }
+    });
+  </script>
+</body>
+</html>

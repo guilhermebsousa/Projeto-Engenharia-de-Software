@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>sTOK — Login</title>
+
+  <!-- Fonte Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS (mesma origem :8000) -->
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="wrap">
+    <!-- Top bar -->
+    <header class="topbar" aria-label="Barra superior">
+      <div class="brand" aria-label="Logo sTOCK">
+        <span class="brand__name">sTOCK</span>
+        <span class="brand__pill">Beta</span>
+      </div>
+
+      <div class="menu-area">
+        <button class="menu-btn" id="menuBtn" aria-haspopup="true" aria-expanded="false" aria-controls="menuList" title="Abrir menu">
+          <svg class="menu-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Menu
+        </button>
+
+        <nav class="dropdown" id="menuList" role="menu" aria-label="Menu principal" data-open="false">
+          <a href="#" role="menuitem">
+            <span>Quem somos</span>
+            <small>Conheça o sTOK</small>
+          </a>
+          <a href="#" role="menuitem">
+            <span>Criar conta</span>
+            <small>Comece agora</small>
+          </a>
+          <a href="#" role="menuitem">
+            <span>Alterar idioma</span>
+            <small>PT • EN • ES</small>
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main>
+      <section class="card" aria-labelledby="titulo-login">
+        <h1 id="titulo-login">Bem-vindo ao sTOK</h1>
+        <p class="subtitle">Entre para acessar seu controle de estoque.</p>
+
+        <form id="loginForm" autocomplete="on" novalidate>
+          <div class="field">
+            <label for="login">Login</label>
+            <input id="login" name="login" type="text" placeholder="Seu usuário ou e-mail" required />
+          </div>
+
+          <div class="field">
+            <label for="senha">Senha</label>
+            <input id="senha" name="senha" type="password" placeholder="Sua senha" minlength="3" required />
+          </div>
+
+          <button class="btn" type="submit">Acessar</button>
+
+          <div class="helper">
+            <a href="#" id="forgot">Esqueci a senha</a>
+            <a href="#" id="signup">Criar conta</a>
+          </div>
+        </form>
+
+        <p class="subtitle" style="margin-top:12px">
+          <b>API:</b> <span id="apiBase"></span>
+        </p>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer">
+    © 2025 sTOK — Todos os direitos reservados.
+  </footer>
+
+  <!-- JS (mesma origem :8000) -->
+  <script>
+    // Só para exibir a base da API na tela:
+    document.addEventListener('DOMContentLoaded', () => {
+      const el = document.getElementById('apiBase');
+      if (el) el.textContent = window.location.origin;
+    });
+  </script>
+  <script src="/app.js"></script>
+</body>
+</html>

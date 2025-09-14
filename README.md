@@ -1,4 +1,4 @@
-# Projeto-Engenharia-de-Software
+# sTOCK - Projeto Engenharia de Software
 
 ## Resumo
 
@@ -8,7 +8,120 @@ O sistema emitirá alertas inteligentes em situações críticas, como falta de 
 
 A proposta traz praticidade, economia e eficiência para pequenos e médios mercados, que muitas vezes não têm acesso a sistemas de gestão sofisticados.
 
-### Para rodar o código:
-- pip install -r requirements.txt
-- Fazer num file .env (trocando user e password pelo seu): DATABASE_URL = "postgresql+psycopg2://user:password@localhost:5432/controle_estoque"
+
+## Guia de Execução
+
+## 1) Criar e ativar o ambiente virtual (venv)
+
+### Windows (PowerShell)
+```powershell
+py -3.11 -m venv .venv          # ou: python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+### Linux/macOS
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+## 2) Instalar dependências
+
+O projeto já tem `requirements.txt`:
+```bash
+pip install -r requirements.txt
+```
+
+## 3) Configurar o app (DB)
+
+Fazer num file .env (trocando user e password pelo seu): 
+```bash
+DATABASE_URL = "postgresql+psycopg2://user:password@localhost:5432/controle_estoque"
+```
 - Checar .env.example
+- Rodar python alimentando_database_temp.py
+
+## 4) Subir o servidor (API + Frontend)
+
+Na raiz do projeto (venv ativo):
+```bash
+uvicorn api.main:app --reload --port 8000
+```
+- A API ficará em **http://localhost:8000**
+- A documentação Swagger em **http://localhost:8000/docs**
+- O frontend (HTML/JS) é servido pela própria API a partir da pasta `frontend/` (ex.: **http://localhost:8000/**).
+
+
+---
+
+Você pode explicar essa parte do jeito mais claro assim:
+
+---
+
+## 5) Criar usuário inicial (seed) — PowerShell
+
+No **PowerShell**, o comando `curl` vira `Invoke-WebRequest` ou `Invoke-RestMethod`. Para criar um usuário padrão de teste, execute:
+
+```powershell
+Invoke-RestMethod -Method POST http://localhost:8000/api/users/seed
+```
+
+Esse *seed* garante a existência de um usuário inicial:
+
+* **Usuário:** `op_front`
+* **Senha:** `123`
+
+Esse usuário serve como operador padrão, mas ao logar com `op_front`, o relatório pode aparecer **vazio**.
+Isso acontece porque o script `alimentando_database_temp.py` popula a base com dados vinculados a outro usuário (o administrador).
+
+### Usuário criado pelo script de população temporária
+
+O script `alimentando_database_temp.py` limpa o banco e cria um **usuário administrador**, junto com dezenas de produtos e movimentações:
+
+* **Usuário:** `admin`
+* **Senha:** `admin123`
+
+Quando você loga como `admin`, todo o estoque populado pelo script fica visível nos relatórios.
+
+Essa divergência foi mantida **de propósito** para simular diferentes perfis de cliente (operador sem estoque inicial vs. administrador com estoque cheio).
+
+
+## 6) Acessar o app
+
+- Abra **http://localhost:8000** no navegador → **Login**
+- Entre com **op_front / 123**
+- Use o menu para **Cadastrar produto**, **Movimentar estoque** etc.
+- A documentação da API está em **http://localhost:8000/docs** (você pode testar os endpoints por lá também).
+
+
+## Estrutura do projeto
+
+```
+.
+├── api/
+│   ├── main.py
+│   ├── deps.py
+│   └── schemas.py
+├── database/
+│   ├── database.py
+│   ├── models/
+│   │   ├── users.py
+│   │   ├── products.py
+│   │   └── movements.py
+│   └── services/
+│       ├── users_service.py
+│       ├── products_service.py
+│       └── movements_service.py
+├── frontend/
+│   ├── index.html
+│   ├── inicial.html
+│   ├── assets/
+│   └── ...
+├── barcode_scanner/  
+│   └── scanner.py
+├── config.py
+├── alimentando_database_temp.py
+├── exemplo_uso_db.py
+├── requirements.txt
+└── README.md
+```
