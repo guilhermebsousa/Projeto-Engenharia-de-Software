@@ -11,28 +11,28 @@ A proposta traz praticidade, economia e eficiência para pequenos e médios merc
 
 ## Guia de Execução
 
-## 1) Criar e ativar o ambiente virtual (venv)
+### 1) Criar e ativar o ambiente virtual (venv)
 
-### Windows (PowerShell)
+#### Windows (PowerShell)
 ```powershell
 py -3.11 -m venv .venv          # ou: python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
-### Linux/macOS
+#### Linux/macOS
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-## 2) Instalar dependências
+### 2) Instalar dependências
 
 O projeto já tem `requirements.txt`:
 ```bash
 pip install -r requirements.txt
 ```
 
-## 3) Configurar o app (DB)
+### 3) Configurar o app (DB)
 
 Fazer num file .env (trocando user e password pelo seu): 
 ```bash
@@ -41,7 +41,7 @@ DATABASE_URL = "postgresql+psycopg2://user:password@localhost:5432/controle_esto
 - Checar .env.example
 - Rodar python alimentando_database_temp.py
 
-## 4) Subir o servidor (API + Frontend)
+### 4) Subir o servidor (API + Frontend)
 
 Na raiz do projeto (venv ativo):
 ```bash
@@ -52,13 +52,7 @@ uvicorn api.main:app --reload --port 8000
 - O frontend (HTML/JS) é servido pela própria API a partir da pasta `frontend/` (ex.: **http://localhost:8000/**).
 
 
----
-
-Você pode explicar essa parte do jeito mais claro assim:
-
----
-
-## 5) Criar usuário inicial (seed) — PowerShell
+### 5) Criar usuário inicial (seed) — PowerShell
 
 No **PowerShell**, o comando `curl` vira `Invoke-WebRequest` ou `Invoke-RestMethod`. Para criar um usuário padrão de teste, execute:
 
@@ -74,7 +68,7 @@ Esse *seed* garante a existência de um usuário inicial:
 Esse usuário serve como operador padrão, mas ao logar com `op_front`, o relatório pode aparecer **vazio**.
 Isso acontece porque o script `alimentando_database_temp.py` popula a base com dados vinculados a outro usuário (o administrador).
 
-### Usuário criado pelo script de população temporária
+#### Usuário criado pelo script de população temporária
 
 O script `alimentando_database_temp.py` limpa o banco e cria um **usuário administrador**, junto com dezenas de produtos e movimentações:
 
@@ -86,7 +80,7 @@ Quando você loga como `admin`, todo o estoque populado pelo script fica visíve
 Essa divergência foi mantida **de propósito** para simular diferentes perfis de cliente (operador sem estoque inicial vs. administrador com estoque cheio).
 
 
-## 6) Acessar o app
+### 6) Acessar o app
 
 - Abra **http://localhost:8000** no navegador → **Login**
 - Entre com **op_front / 123**
@@ -94,7 +88,7 @@ Essa divergência foi mantida **de propósito** para simular diferentes perfis d
 - A documentação da API está em **http://localhost:8000/docs** (você pode testar os endpoints por lá também).
 
 
-## Estrutura do projeto
+### Estrutura do projeto
 
 ```
 .
