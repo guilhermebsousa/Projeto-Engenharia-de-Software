@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>sTOK — Chat</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css" />
+
+  <style>
+    html, body { max-width: 100%; overflow-x: hidden; }
+    * { box-sizing: border-box; }
+    .wrap { min-height: 100vh; display: grid; grid-template-rows: 64px 1fr; }
+    .left-group { display: inline-flex; align-items: center; gap: 10px; }
+    .brand__name { font-size: 20px; font-weight: 700; }
+    .back-btn{
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border-radius: 12px;
+      border: 1px solid var(--card-border);
+      background: var(--card); color: var(--text);
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform .08s ease, background .2s ease, border-color .2s ease;
+      font-family: 'Poppins', sans-serif;
+    }
+    .back-btn:active { transform: translateY(1px); }
+    .back-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+    .icon-24{ width: 20px; height: 20px; }
+    .menu-area { position: relative; }
+    .settings-menu { position: absolute; top: 56px; right: 0; width: min(280px, 92vw); }
+
+    main {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 16px;
+      padding: 24px;
+      padding-top: 96px;
+      align-items: start;
+    }
+    @media (max-width: 980px){ main { grid-template-columns: 1fr; padding: 16px; padding-top: 92px; } }
+
+    .sidebar {
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 12px;
+      position: sticky; top: 88px;
+      height: calc(100dvh - 120px);
+      display: grid; grid-template-rows: auto 1fr; gap: 10px;
+    }
+    .sidebar h3 { margin: 0; font-size: 16px; font-weight: 600; }
+    .side-list { overflow-y: auto; border: 1px solid var(--card-border); border-radius: 12px; padding: 6px; background: rgba(15,25,20,.6); }
+    .side-item { display: grid; align-items: center; padding: 10px 12px; border-radius: 10px; color: var(--text); cursor: pointer; user-select: none; font-size: 14px; }
+    .side-item:hover { background: rgba(255,255,255,.06); }
+    .side-item.active { background: linear-gradient(90deg, var(--brand1), var(--brand2)); color: #0d1a13; font-weight: 700; }
+    @media (max-width: 980px){ .sidebar { display:none; } }
+
+    .chat-wrap { width: 100%; max-width: 980px; margin: 0 auto; display: grid; grid-template-rows: auto 1fr auto; gap: 12px; }
+    .chat-head { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; border:1px solid var(--card-border); border-radius:var(--radius); background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); box-shadow: var(--shadow); }
+    .chat-head h1 { margin:0; font-size: clamp(18px, 2.2vw + 12px, 22px); font-weight:600; }
+    .btn { font-family: 'Poppins', sans-serif; font-weight: 700; }
+
+    .messages { border: 1px solid var(--card-border); border-radius: 12px; background: rgba(15,25,20,.7); padding: clamp(12px, 2.4vw, 18px); min-height: 48vh; max-height: calc(100dvh - 240px); overflow-y: auto; scroll-behavior: smooth; }
+    @media (max-width: 540px){ .messages { max-height: calc(100dvh - 270px); } }
+
+    .row { display:grid; grid-template-columns: 40px 1fr; gap:10px; margin:10px 0; }
+    .row.user { grid-template-columns: 1fr 40px; }
+    .avatar { width:40px; height:40px; border-radius:999px; display:grid; place-items:center; background: linear-gradient(90deg, var(--brand1), var(--brand2)); color:#0d1a13; font-weight:800; box-shadow:0 8px 18px rgba(72,215,127,.25); user-select:none; }
+    .row.user .avatar { background: rgba(255,255,255,.9); color:#0d1a13; }
+    .bubble { border:1px solid var(--card-border); border-radius:14px; box-shadow: var(--shadow); padding:14px; font-size:14px; background: rgba(18,30,24,.95); color: var(--text); white-space: pre-wrap; word-wrap: break-word; }
+    .bubble.user { background: linear-gradient(90deg, var(--brand1), var(--brand2)); color:#0d1a13; font-weight:700; border-color: transparent; }
+
+    .composer { display:grid; grid-template-columns: 1fr auto; gap:10px; }
+    textarea { width:100%; min-height:48px; max-height:180px; padding:14px 14px 12px; border-radius:12px; border:1px solid var(--card-border); background: rgba(15,25,20,.85); color: var(--text); outline:none; resize:none; overflow:hidden; transition: border-color .15s ease, box-shadow .15s ease, background .2s ease; font-family:'Poppins', sans-serif; line-height:1.4; }
+    textarea::placeholder { color:#aacbb9; }
+    textarea:focus { border-color: var(--focus); box-shadow:0 0 0 3px rgba(155,245,179,.15); background: rgba(18,30,24,.95); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar" aria-label="Barra superior">
+      <div class="left-group">
+        <button class="back-btn" id="btnBack" title="Voltar para inicial" aria-label="Voltar">
+          <svg class="icon-24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="brand__name">sTOCK</span>
+        <span class="brand__pill">Beta</span>
+      </div>
+
+      <div class="menu-area">
+        <button class="menu-btn" id="btnMenu" aria-haspopup="true" aria-expanded="false" aria-controls="settingsMenu" title="Menu">
+          <svg class="menu-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Menu
+        </button>
+
+        <nav class="dropdown settings-menu" id="settingsMenu" data-open="false" role="menu" aria-label="Menu">
+          <a href="#" class="item-row" id="menuTips" role="menuitem" tabindex="0">Dicas de uso<small>Como perguntar e limpar a conversa</small></a>
+          <a href="#" class="item-row" id="menuSupport" role="menuitem" tabindex="0">Suporte<small>Fale com a equipe</small></a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <aside class="sidebar" id="sidebar" aria-label="Histórico">
+        <h3>Histórico</h3>
+        <div class="side-list" id="sideList">
+          <div class="side-item active">Consulta estoque</div>
+          <div class="side-item">Relatório por categoria</div>
+          <div class="side-item">Baixa por código</div>
+          <div class="side-item">Dicas e ajuda</div>
+        </div>
+      </aside>
+
+      <section class="chat-wrap">
+        <div class="chat-head">
+          <h1 id="chatTitle">Nova conversa</h1>
+          <div class="head-actions">
+            <button class="btn" id="btnClear">Limpar conversa</button>
+          </div>
+        </div>
+
+        <div class="messages" id="messages" role="log" aria-live="polite" aria-relevant="additions">
+          <div class="row bot">
+            <div class="avatar" aria-hidden="true">B</div>
+            <div class="bubble bot" id="hello">
+              Olá! Sou o assistente do sTOK. Já estou conectado ao seu banco.
+              <br><br><b>Dicas:</b>
+              <br>• Pergunte “Quanto temos de &lt;produto&gt;?” ou “Preço do &lt;produto&gt;?”.
+              <br>• Diga “listar produtos” para ver alguns itens.
+              <br>• Escreva <b>“ler código”</b> para abrir o leitor de barras (servidor).
+            </div>
+          </div>
+        </div>
+
+        <form class="composer" id="composer" autocomplete="off">
+          <textarea id="input" rows="1" placeholder="Digite sua mensagem... (Enter envia • Shift+Enter quebra linha)"></textarea>
+          <button class="btn" type="submit" id="btnSend">Enviar</button>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // ===== Navegação =====
+    document.getElementById('btnBack').addEventListener('click', () => { window.location.href = '/inicial.html'; });
+
+    // ===== Menu =====
+    const btnMenu = document.getElementById('btnMenu');
+    const menu = document.getElementById('settingsMenu');
+    function setMenu(open){ menu.dataset.open = open ? "true" : "false"; btnMenu.setAttribute('aria-expanded', open ? "true" : "false"); }
+    btnMenu.addEventListener('click', (e)=>{ e.stopPropagation(); setMenu(menu.dataset.open !== "true"); });
+    document.addEventListener('click', (e)=>{ if (!menu.contains(e.target) && e.target !== btnMenu) setMenu(false); });
+    document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') setMenu(false); });
+
+    // ===== Sessão + API base (mesma origem) =====
+    const API_BASE = window.location.origin; // tudo via :8000
+    const user = JSON.parse(sessionStorage.getItem('stokUser') || 'null');
+    if (!user) window.location.href = '/index.html';
+
+    // ===== Estado (dados reais) =====
+    let produtos = [];  // [{id, name, brand, unit, package_quantity, minimum_stock, suggested_price, current_quantity, barcode, ...}]
+    async function carregarProdutos() {
+      const url = `${API_BASE}/api/users/${user.id}/products`;
+      const r = await fetch(url);
+      if (!r.ok) throw new Error('Falha ao carregar produtos');
+      produtos = await r.json();
+    }
+
+    // ===== Utilidades =====
+    const msgs = document.getElementById('messages');
+    const input = document.getElementById('input');
+    const composer = document.getElementById('composer');
+    const chatTitle = document.getElementById('chatTitle');
+    const sideList = document.getElementById('sideList');
+
+    function addRow(text, from='bot'){
+      const row = document.createElement('div'); row.className = 'row ' + from;
+      const avatar = document.createElement('div'); avatar.className = 'avatar'; avatar.textContent = from === 'user' ? 'U' : 'B';
+      const bubble = document.createElement('div'); bubble.className = 'bubble ' + from; bubble.textContent = text;
+      if (from === 'user'){ row.appendChild(bubble); row.appendChild(avatar); } else { row.appendChild(avatar); row.appendChild(bubble); }
+      msgs.appendChild(row); requestAnimationFrame(()=> { msgs.scrollTop = msgs.scrollHeight; });
+    }
+
+    function normalizar(txt){ return (txt||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+    function acharProdutoPergunta(query){
+      const qn = normalizar(query);
+      let melhor = null, score = -1;
+      for (const p of produtos){
+        const nomeN = normalizar(`${p.name} ${p.brand||''} ${p.package_quantity||''}${p.unit||''}`);
+        let s = 0; nomeN.split(/\s+/).forEach(w => { if (w.length>1 && qn.includes(w)) s++; });
+        if (s > score){ score = s; melhor = p; }
+      }
+      return score > 0 ? melhor : null;
+    }
+
+    function totalEstoque(){ return produtos.reduce((a,b)=> a + (b.current_quantity||0), 0); }
+    function produtoMaiorEstoque(){ return produtos.reduce((a,b)=> (a.current_quantity||0) >= (b.current_quantity||0) ? a : b, produtos[0] || null); }
+    function produtoMenorEstoque(){ return produtos.reduce((a,b)=> (a.current_quantity||0) <= (b.current_quantity||0) ? a : b, produtos[0] || null); }
+
+    // ===== Ações que batem no backend =====
+    async function lerCodigoServidor(){
+      const url = `${API_BASE}/api/users/${user.id}/scan`;
+      const r = await fetch(url, { method: 'POST' });
+      if (!r.ok) throw new Error(`Leitura falhou (${r.status})`);
+      return await r.json(); // { barcode, product? }
+    }
+
+    // ===== Respostas =====
+    function responderPergunta(q){
+      const nq = normalizar(q);
+      if (/^listar( produtos)?$/.test(nq)){
+        const top = produtos.slice(0, Math.min(produtos.length, 10)).map(p=>`• ${p.name} (${p.brand||'—'}) — ${p.current_quantity??0} ${p.unit||'un'}`).join('\n');
+        return top ? `Alguns produtos:\n${top}` : 'Você ainda não possui produtos cadastrados.';
+      }
+      if (/^ler codigo$|^ler código$|^scan$/.test(nq)){
+        return '__SCAN__'; // marcador para fluxo assíncrono
+      }
+
+      // Perguntas por estoque/quantidade
+      if (/(quanto|qtd|quantidade).*(temos|de|do|da)/.test(nq)){
+        const p = acharProdutoPergunta(q); if (p) return `Temos ${p.current_quantity ?? 0} ${p.unit || 'un'} de ${p.name}.`;
+      }
+      // Perguntas por preço
+      if (/(preco|preço)/.test(nq)){
+        const p = acharProdutoPergunta(q); if (p) return `Preço sugerido de ${p.name}: R$ ${(p.suggested_price ?? 0).toFixed(2)}.`;
+      }
+      // Totais e destaques
+      if (/total.*(estoque|itens)/.test(nq) || /(estoque total|total de itens)/.test(nq)){
+        return `O total em estoque é de ${totalEstoque()} unidades.`;
+      }
+      if (/(maior|mais).*(estoque)/.test(nq)){
+        const p = produtoMaiorEstoque(); return p ? `${p.name} tem o MAIOR estoque: ${p.current_quantity ?? 0} ${p.unit||'un'}.` : 'Sem produtos.';
+      }
+      if (/(menor|menos).*(estoque)/.test(nq)){
+        const p = produtoMenorEstoque(); return p ? `${p.name} tem o MENOR estoque: ${p.current_quantity ?? 0} ${p.unit||'un'}.` : 'Sem produtos.';
+      }
+
+      // Fallback: tenta achar produto
+      const p = acharProdutoPergunta(q);
+      if (p) return `${p.name}: ${p.current_quantity ?? 0} ${p.unit||'un'} em estoque; preço sugerido R$ ${(p.suggested_price ?? 0).toFixed(2)}.`;
+
+      return 'Não encontrei essa informação agora. Tente mencionar o nome do produto ou digite “listar produtos”.';
+    }
+
+    // ===== Histórico (visual) =====
+    sideList.addEventListener('click', (e) => {
+      const item = e.target.closest('.side-item'); if (!item) return;
+      sideList.querySelectorAll('.side-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active'); chatTitle.textContent = item.textContent || 'Conversa';
+    });
+
+    // ===== Dicas / Suporte =====
+    document.getElementById('menuTips').addEventListener('click', (e)=>{ e.preventDefault(); addRow('Dicas de uso:\n• Pergunte: "Quanto temos de leite 1L?" ou "Preço do arroz 5kg?"\n• "listar produtos" mostra alguns itens\n• "ler código" abre o leitor no servidor'); setMenu(false); });
+    document.getElementById('menuSupport').addEventListener('click', (e)=>{ e.preventDefault(); addRow('Suporte (fictício): suporte@stok.exemplo'); setMenu(false); });
+
+    // ===== Auto-expand do textarea =====
+    function autoGrow(el){ el.style.height = 'auto'; const max = parseInt(getComputedStyle(el).maxHeight, 10) || 180; el.style.height = Math.min(el.scrollHeight, max) + 'px'; }
+    input.addEventListener('input', () => autoGrow(input));
+    window.addEventListener('load', () => autoGrow(input));
+
+    // ===== Envio =====
+    composer.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const txt = (input.value || '').trim(); if (!txt) return;
+      addRow(txt, 'user'); input.value = ''; autoGrow(input);
+
+      try {
+        // garante dados atualizados
+        if (!produtos.length) await carregarProdutos();
+
+        const resp = responderPergunta(txt);
+        if (resp === '__SCAN__'){
+          addRow('Abrindo leitor de código no servidor…', 'bot');
+          try {
+            const res = await lerCodigoServidor();
+            const { barcode, product } = res || {};
+            if (barcode) addRow(`Código lido: ${barcode}`, 'bot');
+            if (product) {
+              addRow(`Produto encontrado: ${product.name}\nEstoque: ${product.current_quantity ?? 0} ${product.unit||'un'}\nPreço sugerido: R$ ${(product.suggested_price ?? 0).toFixed(2)}`, 'bot');
+            } else {
+              addRow('Código lido, mas produto não cadastrado. Vá em "Cadastro de produto" para incluí-lo.', 'bot');
+            }
+          } catch (err) {
+            addRow(`Falha ao ler código: ${err.message}`, 'bot');
+          }
+          return;
+        }
+        addRow(resp, 'bot');
+      } catch (err) {
+        console.error(err);
+        addRow('Erro ao acessar a API. Confira se o backend está em execução.', 'bot');
+      }
+    });
+
+    // Enter envia; Shift+Enter quebra linha
+    input.addEventListener('keydown', (e)=>{ if (e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); composer.requestSubmit(); } });
+
+    // Limpar conversa
+    document.getElementById('btnClear').addEventListener('click', ()=>{ msgs.innerHTML = ''; addRow('Conversa limpa. Envie sua pergunta para começar.'); });
+
+    // ===== Boot =====
+    (async function init(){
+      try { await carregarProdutos(); document.getElementById('hello').innerHTML += `\n\n<b>Itens carregados:</b> ${produtos.length}`; }
+      catch { document.getElementById('hello').innerHTML += `\n\n<b>Atenção:</b> não consegui carregar produtos agora.`; }
+    })();
+  </script>
+</body>
+</html>

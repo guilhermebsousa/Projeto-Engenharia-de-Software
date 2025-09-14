@@ -30,9 +30,10 @@ class Movement(Base):
     product = relationship("Product", back_populates="movements")
 
     def __repr__(self):
-        return (
-            f"{self.user.full_name if self.user else 'Usuário desconhecido'} "
-            f"{'recebeu' if self.type.value == 'in' else 'retirou'} "
-            f"{self.quantity} unidades do {self.product.name} "
-            f"com validade {self.expiration_date.strftime('%d/%m/%Y') if self.expiration_date else 'N/A'}."
-        )
+        owner = self.user.full_name or self.user.username if self.user else "Usuário"
+        t = (self.type.value if hasattr(self.type, "value") else str(self.type)).upper()
+        verbo = "recebeu" if t == "IN" else ("retirou" if t == "OUT" else "baixou (perda)")
+        qtd = self.quantity
+        nome = self.product.name if self.product else "Produto"
+        val = self.expiration_date.strftime('%d/%m/%Y') if self.expiration_date else 'N/A'
+        return f"{owner} {verbo} {qtd} unidades de {nome} (validade {val})."

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>sTOK — Relatórios</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root{
+      --container: 1200px;
+      --gap: 12px;
+      --pad: 14px;
+      --round: var(--radius);
+    }
+    html, body { max-width: 100%; overflow-x: hidden; }
+    * { box-sizing: border-box; }
+    body { line-height: 1.35; }
+
+    /* Layout base */
+    .wrap { min-height: 100vh; display: grid; grid-template-rows: 64px 1fr auto; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--card-border);
+      background: rgba(8,15,12,.9);
+      backdrop-filter: blur(8px);
+    }
+
+    .left-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: var(--card);
+      color: var(--text);
+      cursor: pointer;
+    }
+    .actions {
+      display: flex;              
+      flex-direction: row;        
+      align-items: center;       
+      gap: 10px;               
+    }
+    .actions .btn {
+      display: inline-flex;     
+      align-items: center;
+      justify-content: center;
+      padding: 8px 14px;
+      white-space: nowrap;     
+      border-radius: 8px;
+    }
+    .brand { display: inline-flex; align-items: center; gap: 8px; }
+    .brand__name { font-weight: 700; font-size: 18px; }
+    .brand__pill { padding: 4px 8px; border-radius: 999px; background: linear-gradient(90deg,var(--brand1),var(--brand2)); color:#0d1a13; font-weight:800; font-size:12px; }
+    .btn { font-family:'Poppins',sans-serif; font-weight:700; }
+
+    main { padding: 18px 12px 24px; }
+    .container { width: 100%; max-width: var(--container); margin: 0 auto; display: grid; gap: calc(var(--gap) * 1.5); }
+
+    /* Título */
+    .page-title { display:flex; align-items:end; justify-content:space-between; gap:10px; flex-wrap: wrap; }
+    .page-title h1 { margin:0; font-size: clamp(20px, 2.6vw, 28px); font-weight: 700; letter-spacing: .2px; }
+    .page-title small { color: var(--muted); font-size: clamp(12px, 1.6vw, 13px); }
+
+    /* KPIs - compactos e proporcionais */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: var(--gap);
+    }
+    .card{
+      border:1px solid var(--card-border); border-radius: var(--round); box-shadow: var(--shadow);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      padding: var(--pad);
+      display:grid; gap:6px; min-height: 84px;
+    }
+    .card h3 { margin:0; font-size: 12px; color: var(--muted); font-weight:600; letter-spacing:.3px; }
+    .card strong { font-size: clamp(18px, 3.4vw, 24px); }
+
+    /* Filtros */
+    .filters{
+      display: grid; grid-template-columns: 1fr auto auto auto; gap: var(--gap); align-items:center;
+      border:1px solid var(--card-border); border-radius: var(--round); background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      box-shadow: var(--shadow); padding: var(--pad);
+    }
+    @media (max-width: 900px){ .filters{ grid-template-columns: 1fr; } }
+    .search{
+      display:grid; grid-template-columns: 18px 1fr; gap:8px; align-items:center;
+      border:1px solid var(--card-border); border-radius:12px; padding:8px 10px; background: rgba(15,25,20,.7);
+    }
+    .search input{ all:unset; color:var(--text); font-size:14px; }
+
+    /* Grid charts */
+    .grid{
+      display:grid; grid-template-columns: 1.1fr 0.9fr; gap: var(--gap);
+      align-items: stretch;
+    }
+    @media (max-width: 1100px){ .grid{ grid-template-columns: 1fr; } }
+
+    .panel{
+      border:1px solid var(--card-border); border-radius: var(--round); box-shadow: var(--shadow);
+      background: rgba(15,25,20,.6); overflow: hidden;
+      display: grid; grid-template-rows: auto 1fr;
+    }
+    .panel h2{ margin:0; padding: 10px 12px; font-size: 14px; border-bottom: 1px solid var(--card-border);
+      background: rgba(255,255,255,.03); font-weight:600; }
+    .panel-body{ padding: var(--pad); }
+
+    /* Charts com altura controlada por CSS */
+    .chart-box{ height: 320px; }
+    @media (max-width: 1100px){ .chart-box{ height: 260px; } }
+    @media (max-width: 560px){ .chart-box{ height: 200px; } }
+
+    /* Tabela enxuta */
+    .table-wrap{ border:1px solid var(--card-border); border-radius: var(--round); overflow:hidden; background: rgba(15,25,20,.6); }
+    table{ width:100%; border-collapse: collapse; font-size: 13px; }
+    thead th{ text-align:left; font-size:12px; color: var(--muted); font-weight:600; padding:8px 10px; border-bottom:1px solid var(--card-border); background: rgba(255,255,255,.03); }
+    tbody td{ padding:9px 10px; border-bottom:1px solid var(--card-border); }
+    tbody tr:hover{ background: rgba(255,255,255,.04); }
+    .qty{ font-variant-numeric: tabular-nums; }
+
+    /* Pílulas */
+    .pill{ padding:2px 8px; border-radius:999px; font-weight:700; font-size:12px; display:inline-block; }
+    .status-alto{  background:#0ee67a; color:#0b1712; }
+    .status-medio{ background:#f0c420; color:#0b1712; }
+    .status-baixo{ background:#ff5a5a; color:#0b1712; }
+
+    .footer{ text-align:center; font-size:12px; color:var(--muted); padding:16px 12px; border-top:1px solid var(--card-border); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="left-group">
+        <!-- Botão voltar -->
+        <button class="back-btn" id="btnBack" title="Voltar para início">
+          <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+            <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <!-- Logo -->
+        <div class="brand">
+          <span class="brand__name">sTOK</span>
+          <span class="brand__pill">Beta</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <a class="btn" href="/inicial.html">Estoque</a>
+        <a class="btn" href="/cadastro.html">Cadastrar</a>
+        <button class="btn" id="btnLogout" title="Sair">Sair</button>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <div class="page-title">
+          <div>
+            <h1>Relatórios</h1>
+            <small id="subInfo">…</small>
+          </div>
+          <div><small id="saudacao"></small></div>
+        </div>
+
+        <!-- KPIs -->
+        <section class="cards" aria-label="Métricas">
+          <div class="card"><h3>Produtos</h3><strong id="kpiProdutos">0</strong></div>
+          <div class="card"><h3>Estoque total</h3><strong id="kpiEstoque">0</strong></div>
+          <div class="card"><h3>Abaixo do mínimo</h3><strong id="kpiAbaixo">0</strong></div>
+          <div class="card"><h3>Vencendo em 30 dias</h3><strong id="kpiVencendo">0</strong></div>
+        </section>
+
+        <!-- Filtros -->
+        <section class="filters" aria-label="Filtros">
+          <div class="search">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm7-1 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <input id="busca" placeholder="Buscar por nome ou marca…" autocomplete="off" />
+          </div>
+          <button class="btn" id="btnReload">Recarregar</button>
+          <button class="btn" id="btnExport">Exportar CSV</button>
+          <a class="btn" href="/inicial.html">Abrir Estoque</a>
+        </section>
+
+        <!-- Charts -->
+        <section class="grid">
+          <div class="panel">
+            <h2>Top 10 — Estoque por produto</h2>
+            <div class="panel-body chart-box">
+              <canvas id="chartTop"></canvas>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2>Distribuição — Status de estoque</h2>
+            <div class="panel-body chart-box">
+              <canvas id="chartStatus"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tabela -->
+        <section class="table-wrap" aria-label="Lista de produtos">
+          <table>
+            <thead>
+              <tr>
+                <th>Produto</th><th>Marca</th><th>Código</th><th>Qtd</th><th>Mín.</th><th>Preço Sug.</th><th>Validade</th><th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyProdutos">
+              <tr><td colspan="8" style="padding:14px;">Carregando…</td></tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">© 2025 sTOK — Todos os direitos reservados.</footer>
+  </div>
+
+  <script>
+    // ===== Sessão =====
+    const user = JSON.parse(sessionStorage.getItem('stokUser') || 'null');
+    if (!user) { window.location.href = '/index.html'; }
+    document.getElementById('saudacao').textContent = `Olá, ${user.full_name || user.username}!`;
+    document.getElementById('btnLogout').addEventListener('click', ()=>{ sessionStorage.removeItem('stokUser'); window.location.href='/index.html'; });
+
+    // ===== API =====
+    const API_BASE = window.location.origin;
+
+    async function fetchProdutos(term=''){
+      const url = term
+        ? `${API_BASE}/api/users/${user.id}/products?search=${encodeURIComponent(term)}`
+        : `${API_BASE}/api/users/${user.id}/products`;
+      const r = await fetch(url);
+      if (!r.ok) throw new Error('Falha ao carregar produtos');
+      return r.json();
+    }
+
+    // ===== Helpers =====
+    function statusInfo(p){
+      const min = Number(p.minimum_stock || 0);
+      const cur = Number(p.current_quantity || 0);
+      if (min <= 0){
+        if (cur <= 0) return { label:'Baixo', cls:'status-baixo' };
+        if (cur <= 5) return { label:'Médio', cls:'status-medio' };
+        return { label:'Alto', cls:'status-alto' };
+      }
+      if (cur < min) return { label:'Baixo', cls:'status-baixo' };
+      if (cur <= min * 1.5) return { label:'Médio', cls:'status-medio' };
+      return { label:'Alto', cls:'status-alto' };
+    }
+
+    function fmtDateISO(d){
+      if (!d) return '—';
+      try{ const dt = new Date(d); return isNaN(+dt) ? '—' : dt.toLocaleDateString(); }catch{ return '—'; }
+    }
+
+    function desenharTabela(lista){
+      const tb = document.getElementById('tbodyProdutos');
+      tb.innerHTML = '';
+      if (!lista.length){
+        tb.innerHTML = `<tr><td colspan="8" style="padding:14px;">Nenhum produto encontrado.</td></tr>`;
+        return;
+      }
+      for (const p of lista){
+        const st = statusInfo(p);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${p.name}</td>
+          <td>${p.brand ?? '—'}</td>
+          <td>${p.barcode}</td>
+          <td class="qty">${p.current_quantity ?? 0} ${p.unit || 'un'}</td>
+          <td class="qty">${p.minimum_stock ?? 0}</td>
+          <td>${p.suggested_price != null ? 'R$ ' + Number(p.suggested_price).toFixed(2) : '—'}</td>
+          <td>${fmtDateISO(p.expiration_date)}</td>
+          <td><span class="pill ${st.cls}">${st.label}</span></td>
+        `;
+        tb.appendChild(tr);
+      }
+    }
+
+    // ===== KPIs =====
+    function calcKPIs(lista){
+      const hoje = new Date(); const limite = new Date(hoje); limite.setDate(limite.getDate()+30);
+      let abaixo = 0, vencendo = 0, totalEstoque = 0;
+      for (const p of lista){
+        const cur = Number(p.current_quantity || 0), min = Number(p.minimum_stock || 0);
+        totalEstoque += cur;
+        if (min > 0 && cur < min) abaixo++;
+        if (p.expiration_date){
+          const dt = new Date(p.expiration_date);
+          if (!isNaN(+dt) && dt <= limite) vencendo++;
+        }
+      }
+      return { produtos: lista.length, totalEstoque, abaixo, vencendo };
+    }
+    function renderKPIs(k){
+      kpiProdutos.textContent = k.produtos;
+      kpiEstoque.textContent  = k.totalEstoque;
+      kpiAbaixo.textContent   = k.abaixo;
+      kpiVencendo.textContent = k.vencendo;
+    }
+
+    // ===== Charts (responsivos) =====
+    let chartTop = null, chartStatus = null;
+
+    function renderChartTop(lista){
+      const sorted = [...lista].sort((a,b)=> (b.current_quantity||0) - (a.current_quantity||0)).slice(0,10);
+      const labels = sorted.map(p => p.name.length>18 ? p.name.slice(0,17)+'…' : p.name);
+      const data = sorted.map(p => Number(p.current_quantity||0));
+      const ctx = document.getElementById('chartTop');
+
+      if (chartTop) chartTop.destroy();
+      chartTop = new Chart(ctx, {
+        type: 'bar',
+        data: { labels, datasets: [{ label: 'Quantidade', data }] },
+        options: {
+          maintainAspectRatio: false,
+          responsive: true,
+          plugins: { legend: { display:false }, tooltip: { callbacks: { label: c => ` ${c.parsed.y}` } } },
+          scales: { y: { beginAtZero: true, ticks: { precision:0 } } }
+        }
+      });
+    }
+
+    function renderChartStatus(lista){
+      let alto=0, medio=0, baixo=0;
+      for (const p of lista) {
+        const s = statusInfo(p).label;
+        if (s==='Alto') alto++; else if (s==='Médio') medio++; else baixo++;
+      }
+      const ctx = document.getElementById('chartStatus');
+      if (chartStatus) chartStatus.destroy();
+      chartStatus = new Chart(ctx, {
+        type: 'doughnut',
+        data: { labels: ['Alto','Médio','Baixo'], datasets: [{ data: [alto, medio, baixo] }] },
+        options: { maintainAspectRatio:false, plugins: { legend: { position: 'bottom' } } }
+      });
+    }
+
+    // ===== CSV =====
+    function exportCSV(lista){
+      const headers = ['id','name','brand','barcode','unit','current_quantity','minimum_stock','suggested_price','expiration_date'];
+      const rows = lista.map(p => [
+        p.id, p.name, p.brand ?? '', p.barcode, p.unit || 'un',
+        p.current_quantity ?? 0, p.minimum_stock ?? 0,
+        (p.suggested_price ?? ''), (p.expiration_date ?? '')
+      ]);
+      const csv = [headers.join(','), ...rows.map(r => r.map(v => {
+        const s = String(v).replaceAll('"','""'); return /[,\"\n]/.test(s) ? `"${s}"` : s;
+      }).join(','))].join('\n');
+
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `relatorio_estoque_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click(); URL.revokeObjectURL(a.href);
+    }
+
+    // ===== Estado & eventos =====
+    let cache = [];
+    const busca = document.getElementById('busca');
+    const subInfo = document.getElementById('subInfo');
+
+    async function refresh(term=''){
+      const data = await fetchProdutos(term);
+      cache = data;
+      desenharTabela(cache);
+      renderKPIs(calcKPIs(cache));
+      renderChartTop(cache);
+      renderChartStatus(cache);
+      const total = cache.reduce((a,b)=> a + (Number(b.current_quantity)||0), 0);
+      subInfo.textContent = `Itens: ${cache.length} • Estoque total: ${total}`;
+    }
+
+    // Busca com debounce
+    let tSearch = null;
+    busca.addEventListener('input', ()=> {
+      clearTimeout(tSearch);
+      tSearch = setTimeout(()=> refresh(busca.value.trim()), 250);
+    });
+    document.getElementById('btnReload').addEventListener('click', ()=> refresh(busca.value.trim()));
+    document.getElementById('btnExport').addEventListener('click', ()=> exportCSV(cache));
+
+    // Boot
+    (async function init(){
+      try { await refresh(''); }
+      catch (err) {
+        console.error(err);
+        document.getElementById('tbodyProdutos').innerHTML = `<tr><td colspan="8" style="padding:14px;">Não foi possível carregar. Verifique se a API está em execução.</td></tr>`;
+      }
+    })();
+  </script>
+</body>
+</html>
+
+<script>
+  document.getElementById('btnBack').addEventListener('click', () => {
+    window.location.href = '/inicial.html';
+  });
+</script>
+
