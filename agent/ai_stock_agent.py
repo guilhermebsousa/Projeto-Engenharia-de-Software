@@ -32,7 +32,6 @@ class AIStockAgent:
                     "product": product.name
                 }
                 product_info.append(product_dict)
-            print(product_info)
 
             return product_info
         finally:
