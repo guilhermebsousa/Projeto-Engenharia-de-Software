@@ -27,9 +27,10 @@ st.markdown("""
 .main .block-container {
     background-color: #000000 !important;
     padding-top: 1rem;
-    max-width: 100% !important;
+    max-width: 70% !important;
     padding-left: 2rem !important;
     padding-right: 2rem !important;
+    margin: 0 auto !important;
 }
 
 /* Sidebar preta */
@@ -52,17 +53,20 @@ st.markdown("""
     background-color: #000000 !important;
     margin-bottom: 1rem;
     border: none;
+    max-width: 800px;
+    margin: 0 auto 1rem auto;
 }
 
 .chat-message {
     padding: 1rem;
     border-radius: 15px;
-    margin: 1rem 0;
+    margin: 1rem auto;
     background-color: transparent !important;
     box-shadow: none;
     animation: fadeIn 0.5s ease-in;
     color: #ffffff !important;
     border: 2px solid #ffffff;
+    max-width: 600px;
 }
 
 @keyframes fadeIn {
@@ -73,17 +77,21 @@ st.markdown("""
 .user-message {
     background-color: transparent !important;
     color: #ffffff !important;
-    margin-left: 20%;
+    margin-left: auto;
+    margin-right: 0;
     border: 2px solid #ffffff;
     text-align: right;
+    max-width: 500px;
 }
 
 .bot-message {
     background-color: transparent !important;
     color: #ffffff !important;
-    margin-right: 20%;
+    margin-left: 0;
+    margin-right: auto;
     border: 2px solid #ffffff;
     text-align: left;
+    max-width: 500px;
 }
 
 .typing-indicator {
@@ -101,6 +109,9 @@ st.markdown("""
     padding: 1rem 0;
     border-top: none !important;
     margin-top: 1rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Input field styling */
