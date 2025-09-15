@@ -8,7 +8,6 @@ import enum
 class RoleEnum(enum.Enum):
     ADMIN = "ADMIN"          # Pode tudo, gerencia usuários, produtos e relatórios -> dono do aplicativo
     OPERATOR = "OPERATOR"    # Pode movimentar estoque, cadastrar produtos, mas não gerencia usuários -> empresa
-    VIEWER = "VIEWER"        # ------------ Apenas consulta dados, não pode alterar nada -> talvez não precise na aplicação
 
 class User(Base):
     __tablename__ = "users"
@@ -18,7 +17,7 @@ class User(Base):
     password_hash = Column(String, nullable=False)
     full_name = Column(String)
     email = Column(String)
-    role = Column(Enum(RoleEnum), nullable=False, default=RoleEnum.VIEWER)
+    role = Column(Enum(RoleEnum), nullable=False, default=RoleEnum.OPERATOR)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
@@ -30,9 +29,6 @@ class User(Base):
 
     def is_operator(self):
         return self.role == RoleEnum.OPERATOR
-
-    def is_viewer(self):
-        return self.role == RoleEnum.VIEWER
 
     def __repr__(self):
         return (

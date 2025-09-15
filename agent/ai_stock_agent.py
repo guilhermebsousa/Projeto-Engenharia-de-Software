@@ -20,12 +20,21 @@ class AIStockAgent:
         
         self.client = openai.OpenAI(api_key=openai.api_key)
     
-    def get_all_product_names(self) -> List[str]:
-        """Busca todos os nomes de produtos do banco para usar como contexto"""
+    def get_all_product_names(self) -> List[Dict[str, str]]:
+        """Busca todos os nomes e marcas de produtos do banco para usar como contexto"""
         db = SessionLocal()
         try:
-            products = db.query(Product.name).distinct().all()
-            return [product.name for product in products]
+            products = db.query(Product.name, Product.brand).distinct().all()
+            product_info = []
+            for product in products:
+                product_dict = {
+                    "brand": product.brand if product.brand else "",
+                    "product": product.name
+                }
+                product_info.append(product_dict)
+            print(product_info)
+
+            return product_info
         finally:
             db.close()
     

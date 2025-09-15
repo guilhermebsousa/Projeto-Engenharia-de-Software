@@ -1,6 +1,8 @@
 from database.models.movements import Movement
 from database.models.products import Product
 from sqlalchemy.orm import Session
+from barcode_scanner import scanner
+from .products_service import get_by_barcode
 
 # Registrar movimentação (entrada, saída, perda, etc.)
 def create_movement(db: Session, user_idF: str, product_idF: str, quantity: int, type: str, purchase_price: float = None, sale_price: float = None, origin: str = None, destination: str = None, note: str = None, expiration_date = None):
@@ -31,8 +33,6 @@ def create_movement(db: Session, user_idF: str, product_idF: str, quantity: int,
         type=type,
         purchase_price=purchase_price,
         sale_price=sale_price,
-        origin=origin,
-        destination=destination,
         note=note,
         expiration_date=expiration_date
     )
@@ -53,3 +53,31 @@ def get_movements_by_period(db: Session, user_id: str, start_date, end_date):
         Movement.date >= start_date,
         Movement.date <= end_date
     ).all()
+
+def get_movements_by_scanner(db: Session, user_idF: str):
+    barcode = scanner.get_barcode()
+    if not barcode:
+        print("Nenhum código foi lido.")
+        return None
+
+    produto = get_by_barcode(db, barcode, user_idF)
+    if not produto:
+        print("Produto não encontrado.")
+        return None
+
+    # Buscar movimentações relacionadas ao produto lido
+    movements = db.query(Movement).filter(
+        Movement.product_idF == produto.id,
+        Movement.user_idF == user_idF
+    ).all()
+
+    if not movements:
+        print(f"Nenhuma movimentação encontrada para {produto.name}.")
+        return []
+
+    print(f"Movimentações do produto: {produto.brand} {produto.name}")
+    for mov in movements:
+        print(f"- {mov.created_at} | {mov.type} | Qtd: {mov.quantity} | "
+              f"Compra: {mov.purchase_price} | Venda: {mov.sale_price} | Nota: {mov.note}")
+
+    return movements
