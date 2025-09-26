@@ -13,7 +13,9 @@ from database.models.products import Product
 from database.services import (
     authenticate_user, create_user, get_all_users,
     list_products, create_product, get_product_by_id,
-    create_movement, get_by_barcode
+    create_movement, get_by_barcode, update_product, delete_product,
+    is_below_minimum_stock, get_all_movements, get_movements_by_period,
+    get_user_by_username
 )
 
 # NOVO: criar tabelas
@@ -53,6 +55,17 @@ def login(payload: LoginIn, db: Session = Depends(get_db)):
         full_name=user.full_name,
         role=user.role.value,
     )
+
+@app.post("/api/signup", response_model=UserOut)
+def signup(user: LoginIn, db: Session = Depends(get_db)):
+    # Verifica se já existe
+    db_user = get_user_by_username(db, user.username)
+    if db_user:
+        raise HTTPException(status_code=400, detail="Usuário já existe")
+
+    # Cria usuário com role default (ex.: OPERATOR)
+    new_user = create_user(db, username=user.username, password=user.password, role=RoleEnum.OPERATOR)
+    return new_user
 
 # Seed simples (dev)
 @app.post("/api/users/seed", response_model=UserOut)

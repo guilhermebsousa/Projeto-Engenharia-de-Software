@@ -61,7 +61,25 @@ document.getElementById('forgot').addEventListener('click', (e) => {
   e.preventDefault();
   alert('Fluxo de recuperação de senha em breve.');
 });
-document.getElementById('signup').addEventListener('click', (e) => {
+
+// Fluxo de criação de conta
+document.getElementById('signup').addEventListener('click', function(e) {
   e.preventDefault();
-  alert('Fluxo de criação de conta em breve.');
+  const username = prompt('Digite o nome de usuário:');
+  const password = prompt('Digite a senha:');
+  if (!username || !password) return;
+
+  fetch('api/signup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.detail) {
+      alert('Erro: ' + data.detail);
+    } else {
+      alert('Conta criada com sucesso!');
+    }
+  });
 });
