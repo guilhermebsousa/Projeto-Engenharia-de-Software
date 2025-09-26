@@ -108,6 +108,30 @@ def get_products(user_id: str, search: str | None = None, db: Session = Depends(
         for p in prods
     ]
 
+@app.get("/api/users/{user_id}/products/{product_id}", response_model=ProductOut)
+def get_single_product(user_id: str, product_id: str, db: Session = Depends(get_db)):
+    # Chama a função de serviço que você já tem para buscar o produto
+    p = get_product_by_id(db, product_id=product_id, user_id=user_id)
+    
+    # Se o produto não for encontrado, retorna um erro 404
+    if not p:
+        raise HTTPException(status_code=404, detail="Produto não encontrado")
+    
+    # Se encontrou, retorna os dados do produto
+    return ProductOut(
+        id=p.id,
+        user_idF=p.user_idF,
+        barcode=p.barcode,
+        name=p.name,
+        brand=p.brand,
+        unit=p.unit,
+        package_quantity=p.package_quantity,
+        minimum_stock=p.minimum_stock,
+        suggested_price=p.suggested_price,
+        current_quantity=p.current_quantity,
+        expiration_date=p.expiration_date,
+    )
+
 @app.post("/api/users/{user_id}/products", response_model=ProductOut, status_code=201)
 def post_product(user_id: str, payload: ProductIn, db: Session = Depends(get_db)):
     p = create_product(db, user_idF=user_id, **payload.dict())
@@ -123,6 +147,32 @@ def post_product(user_id: str, payload: ProductIn, db: Session = Depends(get_db)
         suggested_price=p.suggested_price,
         current_quantity=p.current_quantity,
         expiration_date=p.expiration_date,
+    )
+
+# Editar produto
+@app.put("/api/users/{user_id}/products/{product_id}", response_model=ProductOut)
+def put_product(user_id: str, product_id: str, payload: ProductIn, db: Session = Depends(get_db)):
+    # Verifica se o produto existe antes de tentar atualizar
+    db_product = get_product_by_id(db, product_id=product_id, user_id=user_id)
+    if not db_product:
+        raise HTTPException(status_code=404, detail="Produto não encontrado")
+
+    # Chama a função de serviço para atualizar o produto no banco de dados
+    updated_product = update_product(db, product_id=product_id, user_id=user_id, **payload.dict())
+    
+    # Retorna o produto atualizado
+    return ProductOut(
+        id=updated_product.id,
+        user_idF=updated_product.user_idF,
+        barcode=updated_product.barcode,
+        name=updated_product.name,
+        brand=updated_product.brand,
+        unit=updated_product.unit,
+        package_quantity=updated_product.package_quantity,
+        minimum_stock=updated_product.minimum_stock,
+        suggested_price=updated_product.suggested_price,
+        current_quantity=updated_product.current_quantity,
+        expiration_date=updated_product.expiration_date,
     )
 
 # ---- MOVEMENTS ----
