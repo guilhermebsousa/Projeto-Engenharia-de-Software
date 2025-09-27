@@ -12,67 +12,131 @@
   <link rel="stylesheet" href="/styles.css" />
 
   <style>
-    /* ===== Estilos específicos desta página ===== */
+    /* ===== Estilos específicos desta página (facelift) ===== */
+
+    /* acentos e efeitos */
+    :root{
+      --glass: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      --ring: conic-gradient(from 180deg at 50% 50%, rgba(97,226,142,.35), rgba(97,226,142,0) 35% 65%, rgba(97,226,142,.35));
+    }
 
     .brand__name { font-size: 20px; }
 
-    .icon-actions {
-      display: inline-flex; align-items: center; gap: 10px; position: relative;
+    /* Top-right icons */
+    .icon-actions { display:inline-flex; align-items:center; gap:10px; position:relative; }
+    .icon-btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      width:40px; height:40px; border-radius:12px; border:1px solid var(--card-border);
+      background: var(--card); color: var(--text); box-shadow: var(--shadow);
+      transition: transform .08s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
     }
-    .icon-btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 40px; height: 40px; border-radius: 12px;
-      border: 1px solid var(--card-border);
-      background: var(--card); color: var(--text);
-      box-shadow: var(--shadow); cursor: pointer;
-      transition: transform .08s ease, background .2s ease, border-color .2s ease;
-    }
-    .icon-btn:active { transform: translateY(1px); }
-    .icon-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-    .icon-24 { width: 22px; height: 22px; }
+    .icon-btn:hover{ box-shadow: 0 10px 24px rgba(0,0,0,.35); border-color: rgba(255,255,255,.2); transform: translateY(-1px); }
+    .icon-btn:active{ transform: translateY(1px); }
+    .icon-24{ width:22px; height:22px; }
 
-    .settings-menu { position: absolute; top: 56px; right: 0; width: min(300px, 92vw); }
-    .dropdown .item-row {
-      display: flex; align-items: center; gap: 10px; padding: 12px;
-      border-radius: 10px; color: var(--text); text-decoration: none;
-      font-weight: 500; user-select: none;
-    }
-    .dropdown .item-row:hover { background: rgba(255,255,255,.06); }
-    .item-icon { width: 18px; height: 18px; opacity: .9; }
-    .item-text { display: grid; line-height: 1.2; }
-    .item-text small { color: var(--muted); font-weight: 400; }
-    .item-disabled { opacity: .6; pointer-events: none; }
-    .item-badge { margin-left: auto; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: rgba(255,255,255,.08); color: var(--muted); }
+    .settings-menu{ position:absolute; top:56px; right:0; width:min(320px,92vw); }
+    .dropdown .item-row{ display:flex; align-items:center; gap:10px; padding:12px; border-radius:10px; color:var(--text); text-decoration:none; font-weight:500; user-select:none; }
+    .dropdown .item-row:hover{ background: rgba(255,255,255,.06); }
+    .item-icon{ width:18px; height:18px; opacity:.9; }
+    .item-text{ display:grid; line-height:1.2; }
+    .item-text small{ color:var(--muted); font-weight:400; }
+    .item-disabled{ opacity:.6; pointer-events:none; }
+    .item-badge{ margin-left:auto; font-size:11px; padding:2px 8px; border-radius:999px; background: rgba(255,255,255,.08); color: var(--muted); }
 
-    main { padding: 24px; padding-top: 96px; display: grid; gap: 24px; }
-    .cards-grid {
-      margin: 0 auto; width: 100%; max-width: 1100px; display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px;
+    /* ===== Hero ===== */
+    main{
+      padding: clamp(20px, 4vw, 36px);
+      padding-top: 100px;
+      display: grid;
+      gap: 28px;
     }
-    @media (max-width: 1024px) { .cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-    @media (max-width: 540px) { .cards-grid { grid-template-columns: 1fr; } }
 
-    .app-card {
-      display: flex; flex-direction: column; justify-content: space-between; gap: 12px;
-      padding: 18px; border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border: 1px solid var(--card-border); box-shadow: var(--shadow);
-      color: var(--text); text-decoration: none; min-height: 140px;
-      transition: transform .08s ease, border-color .2s ease, box-shadow .2s ease;
+    .hero{
+      width:100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      display:grid;
+      gap:16px;
     }
-    .app-card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,.2); box-shadow: 0 16px 28px rgba(0,0,0,.35); }
-
-    .app-card .app-icon {
-      width: 28px; height: 28px; border-radius: 10px; display: inline-flex;
-      align-items: center; justify-content: center; padding: 8px;
-      background: linear-gradient(90deg, var(--brand1), var(--brand2));
-      color: #0d1a13; box-shadow: 0 8px 18px rgba(72,215,127,.25);
+    .hero__headline{
+      display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+      padding:18px 20px; border-radius:20px; border:1px solid var(--card-border);
+      background: var(--glass);
+      position: relative;
     }
-    .app-card h3 { margin: 4px 0 2px; font-size: 18px; font-weight: 600; }
-    .app-card p { color: var(--muted); margin: 0; font-size: 14px; }
+    .hero__headline::before{
+      content:""; position:absolute; inset:-1px; border-radius:20px;
+      background: var(--ring); filter: blur(28px); opacity:.35; pointer-events:none;
+    }
+    .hero__title{ margin:0; font-size: clamp(22px, 3.4vw, 34px); letter-spacing:.2px; }
+    .hero__subtitle{ margin:0; color:var(--muted); font-size: clamp(13px, 1.6vw, 16px); }
 
-    .user-tag { color: var(--muted); font-size: 12px; margin-right: 8px; }
+    .hero__cta{
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; border-radius:999px; border:1px solid var(--card-border);
+      background: rgba(15,25,20,.6); color: var(--text); font-weight:600; font-size:13px;
+    }
+    .chip i{ width:8px; height:8px; border-radius:999px; display:inline-block; }
+    .i-green{ background:#61e28e; } .i-yellow{ background:#f0c420; } .i-red{ background:#ff5a5a; }
+
+    .cta-row{ display:flex; gap:10px; flex-wrap:wrap; }
+    .cta-row .btn{
+      height:40px; min-width:140px; border-radius:12px; padding:0 18px;
+      background: #61e28e; color:#0b1712; font-weight:800;
+    }
+
+    /* ===== Cards ===== */
+    .cards-grid{
+      margin:0 auto; width:100%; max-width:1200px;
+      display:grid; gap: 22px;
+      grid-template-columns: repeat(12, 1fr);
+    }
+    /* 4 col desktop, 2 col tablet, 1 col mobile */
+    .col-3{ grid-column: span 3; }
+    @media (max-width: 1100px){ .col-3{ grid-column: span 6; } }
+    @media (max-width: 560px){ .col-3{ grid-column: span 12; } }
+
+    .app-card{
+      position:relative; overflow:hidden;
+      display:flex; flex-direction:column; gap:12px; min-height:160px;
+      padding:20px; border-radius:18px; border:1px solid rgba(255,255,255,.08);
+      background: radial-gradient(1200px 200px at -10% -20%, rgba(97,226,142,.06), transparent 45%) , var(--glass);
+      color: var(--text); text-decoration:none;
+      transition: transform .18s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease;
+    }
+    .app-card::after{
+      content:""; position:absolute; inset:0; pointer-events:none;
+      background: radial-gradient(220px 120px at 120% -20%, rgba(97,226,142,.18), transparent 60%);
+      opacity:.35; transition: opacity .25s ease;
+    }
+    .app-card:hover{
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,.45);
+      border-color: rgba(255,255,255,.22);
+    }
+    .app-card:hover::after{ opacity:.55; }
+
+    .app-icon{
+      width:34px; height:34px; border-radius:12px; display:inline-flex; align-items:center; justify-content:center;
+      padding:8px; background: linear-gradient(90deg, var(--brand1), var(--brand2));
+      color:#0d1a13; box-shadow: 0 10px 20px rgba(72,215,127,.28);
+    }
+    .app-card h3{ margin: 6px 0 2px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
+    .app-card p{ color: var(--muted); margin:0; font-size:14px; }
+
+    /* Badge “novo” opcional */
+    .badge{
+      position:absolute; top:16px; right:16px; padding:4px 10px; border-radius:999px;
+      font-size:11px; font-weight:800; color:#0b1712; background:#61e28e;
+      box-shadow: 0 8px 18px rgba(97,226,142,.35);
+    }
+
+    .user-tag{ color: var(--muted); font-size:12px; margin-right:8px; }
   </style>
+
 </head>
 <body>
   <div class="wrap">
@@ -143,7 +207,7 @@
             </svg>
             <span class="item-text">
               Idioma
-              <small>PT • EN • ES</small>
+              <small text-align:center>PT • EN • ES</small>
             </span>
           </a>
 
@@ -163,13 +227,26 @@
 
     <!-- Conteúdo principal -->
     <main aria-label="Ações rápidas">
-      <div class="cards-grid">
-        <!-- Cadastro de produto -->
-        <a class="app-card" href="/cadastro.html">
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero__headline">
+          <div>
+            <h1 class="hero__title">Bem-vindo ao <strong>eSTOK</strong></h1>
+            <p class="hero__subtitle">Gerencie cadastros, saídas e relatórios do seu estoque com rapidez.</p>
+          </div>
+
+          <div class="hero__cta">
+            <div class="chip"><i class="i-yellow"></i> Em breve: Notificações</div>
+            <div class="chip"><i class="i-red"></i> Sem integrações externas</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GRID DE ATALHOS -->
+      <section class="cards-grid">
+        <a class="app-card col-3" href="/cadastro.html">
           <span class="app-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" class="icon-24" fill="none">
-              <path d="M12 5v14M5 12h14" stroke="#0d1a13" stroke-width="2.2" stroke-linecap="round"/>
-            </svg>
+            <svg viewBox="0 0 24 24" class="icon-24" fill="none"><path d="M12 5v14M5 12h14" stroke="#0d1a13" stroke-width="2.2" stroke-linecap="round"/></svg>
           </span>
           <div>
             <h3>Cadastro de produto</h3>
@@ -177,12 +254,9 @@
           </div>
         </a>
 
-        <!-- Venda / Retirada de produto -->
-        <a class="app-card" href="/venda_retirada.html">
+        <a class="app-card col-3" href="/venda_retirada.html">
           <span class="app-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" class="icon-24" fill="none">
-              <path d="M3 7h18l-2 10H5L3 7Zm5 10v2a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+            <svg viewBox="0 0 24 24" class="icon-24" fill="none"><path d="M3 7h18l-2 10H5L3 7Zm5 10v2a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </span>
           <div>
             <h3>Venda / Retirada</h3>
@@ -190,46 +264,39 @@
           </div>
         </a>
 
-        <!-- Editar produtos -->
-        <a class="app-card" href="/editar.html">
+        <a class="app-card col-3" href="/editar.html">
+          <span class="badge">Novo fluxo</span>
           <span class="app-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" class="icon-24" fill="none">
-              <path d="M4 20h4l10-10-4-4L4 16v4z" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round"/>
-            </svg>
+            <svg viewBox="0 0 24 24" class="icon-24" fill="none"><path d="M4 20h4l10-10-4-4L4 16v4z" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round"/></svg>
           </span>
           <div>
             <h3>Editar Produtos</h3>
-            <p>Altere informações de produtos já cadastrados no estoque.</p>
+            <p>Atualize cadastros existentes.</p>
           </div>
         </a>
 
-        <!-- Relatórios e Dashboards -->
-        <a class="app-card" href="/relatorio.html">
+        <a class="app-card col-3" href="/relatorio.html">
           <span class="app-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" class="icon-24" fill="none">
-              <path d="M4 19V5m5 14V10m5 9V7m5 12V3" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+            <svg viewBox="0 0 24 24" class="icon-24" fill="none"><path d="M4 19V5m5 14V10m5 9V7m5 12V3" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </span>
           <div>
-            <h3>Relatórios & Dashboards</h3>
+            <h3>Relatórios &amp; Dashboards</h3>
             <p>Métricas e histórico do estoque.</p>
           </div>
         </a>
 
-        <!-- Chatbot -->
-        <a class="app-card" href="/chatbot.html">
+        <a class="app-card col-3" href="/chatbot.html">
           <span class="app-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" class="icon-24" fill="none">
-              <path d="M21 15a4 4 0 0 1-4 4H9l-4 3v-3a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4h12a4 4 0 0 1 4 4v8Z" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+            <svg viewBox="0 0 24 24" class="icon-24" fill="none"><path d="M21 15a4 4 0 0 1-4 4H9l-4 3v-3a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4h12a4 4 0 0 1 4 4v8Z" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </span>
           <div>
             <h3>Chatbot</h3>
             <p>Atalhos e assistência ao operador.</p>
           </div>
         </a>
-      </div>
+      </section>
     </main>
+
 
     <footer class="footer">© 2025 sTOK — Todos os direitos reservados.</footer>
   </div>

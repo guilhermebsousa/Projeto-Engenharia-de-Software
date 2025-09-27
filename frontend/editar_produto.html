@@ -7,25 +7,136 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css" />
   <style>
-    /* Estilos para consistência visual */
-    :root{ --container: 1200px; --gap: 12px; --pad: 14px; --round: var(--radius); }
-    html, body { max-width: 100%; overflow-x: hidden; }
-    * { box-sizing: border-box; }
-    body { line-height: 1.35; }
-    .wrap { min-height: 100vh; display: grid; grid-template-rows: 64px 1fr auto; }
-    .topbar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--card-border); background: rgba(8,15,12,.9); backdrop-filter: blur(8px);}
-    .left-group { display: flex; align-items: center; gap: 12px; }
-    .back-btn { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--card-border); background: var(--card); color: var(--text); cursor: pointer;}
-    .brand { display: inline-flex; align-items: center; gap: 8px; }
-    .brand__name { font-weight: 700; font-size: 18px; }
-    .brand__pill { padding: 4px 8px; border-radius: 999px; background: linear-gradient(90deg,var(--brand1),var(--brand2)); color:#0d1a13; font-weight:800; font-size:12px; }
-    main { padding: 18px 12px 24px; }
-    .container { width: 100%; max-width: var(--container); margin: 0 auto; display: grid; gap: calc(var(--gap) * 1.5);}
-    .page-title { display:flex; align-items:end; justify-content:space-between; gap:10px; flex-wrap: wrap; margin-bottom: 12px; }
-    .page-title h1 { margin:0; font-size: clamp(20px, 2.6vw, 28px); font-weight: 700; letter-spacing: .2px; }
-    .footer{ text-align:center; font-size:12px; color:var(--muted); padding:16px 12px; border-top:1px solid var(--card-border); }
-    .form-card { max-width: 500px; margin: 0 auto; }
+    /* Estilos Gerais */
+    :root {
+      --container: 1200px;
+      --gap: 12px;
+      --pad: 14px;
+      --round: var(--radius);
+    }
+
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      line-height: 1.35;
+    }
+
+    /* Layout Principal */
+    .wrap {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 64px 1fr auto;
+    }
+
+    /* Topbar */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--card-border);
+      background: rgba(8, 15, 12, .9);
+      backdrop-filter: blur(8px);
+    }
+
+    .left-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background: var(--card);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    /* Marca */
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand__name {
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .brand__pill {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--brand1), var(--brand2));
+      color: #0d1a13;
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    /* Conteúdo Principal */
+    main {
+      padding: 18px 12px 24px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--container);
+      margin: 0 auto;
+      display: grid;
+      gap: calc(var(--gap) * 1.5);
+    }
+
+    /* Título da Página */
+    .page-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      text-align: center;
+      margin: 12px;
+    }
+
+    .page-title h1 {
+      margin: 0;
+      text-align: center;
+      font-size: clamp(20px, 2.6vw, 28px);
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+
+    /* Rodapé */
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 16px 12px;
+      border-top: 1px solid var(--card-border);
+    }
+
+    /* Formulário */
+    .form-card {
+      max-width: 500px;
+      margin: 0 auto;
+    }
   </style>
+
 </head>
 <body>
   <div class="wrap">
@@ -46,7 +157,7 @@
     <main>
       <div class="container">
         <div class="page-title">
-          <h1>Editar Produto</h1>
+          <h1 style="text-align: center;">Editar Produto</h1>
         </div>
 
         <form id="formEditarProduto" class="card form-card">
@@ -97,7 +208,7 @@
   <script src="/utils.js"></script>
 
   <script>
-    // Agora o script da página usa as variáveis `user` e `API_BASE` que foram criadas em utils.js
+    // usando  as variáveis `user` e `API_BASE` que foram criadas em utils.js
     verificarSessao();
 
     // Botão voltar
