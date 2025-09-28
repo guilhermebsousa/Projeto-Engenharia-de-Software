@@ -1,8 +1,6 @@
-# from database.database import SessionLocal
-from database.models.users import User
+from database.models.users import User, RoleEnum
 from sqlalchemy.orm import Session
 from werkzeug.security import generate_password_hash, check_password_hash
-from database.models.users import RoleEnum
 
 # Criar usuário
 def create_user(db: Session, username: str, password: str, role: RoleEnum):
@@ -20,7 +18,7 @@ def get_user_by_username(db: Session, username: str):
 # Autenticar usuário
 def authenticate_user(db: Session, username: str, password: str):
     user = get_user_by_username(db, username)
-    if user and check_password_hash(user.password, password):
+    if user and check_password_hash(user.password_hash, password):
         return user
     return None
 
@@ -29,7 +27,7 @@ def get_all_users(db: Session):
     return db.query(User).all()
 
 # Deletar usuário
-def delete_user(db: Session, user_id: int):
+def delete_user(db: Session, user_id: str):
     user = db.query(User).filter(User.id == user_id).first()
     if user:
         db.delete(user)

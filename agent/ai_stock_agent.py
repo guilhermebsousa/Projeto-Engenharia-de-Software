@@ -29,7 +29,7 @@ class AIStockAgent:
             for product in products:
                 product_dict = {
                     "brand": product.brand if product.brand else "",
-                    "product": product.name
+                    "name": product.name
                 }
                 product_info.append(product_dict)
 
@@ -44,9 +44,13 @@ class AIStockAgent:
             return "Nenhum produto encontrado no estoque."
         
         context = "Produtos disponíveis no estoque:\n"
-        for i, name in enumerate(product_names, 1):
-            context += f"{i}. {name}\n"
+        for i, product in enumerate(product_names, 1):
+            brand = product['brand'] if product['brand'] else 'Sem marca'
+            name = product['name']
+            context += f"{i}. {name} (Marca: {brand})\n"
         
+        print(context)
+
         return context
     
     def generate_sql_query(self, user_question: str, product_context: str) -> str:
@@ -72,7 +76,7 @@ Estrutura da tabela 'products':
 
 {product_context}
 
-IMPORTANTE: Use APENAS sintaxe SQLite:
+IMPORTANTE: Use APENAS sintaxe PostgreSQL:
 - Para busca case-insensitive use: UPPER(campo) LIKE UPPER('%valor%')
 - NÃO use ILIKE (isso é PostgreSQL)
 - Use LIKE com UPPER() para case-insensitive
@@ -163,7 +167,7 @@ Formate uma resposta clara e útil para o usuário.
             
             # 3. Executar query
             results = self.execute_query(sql_query)
-            
+            print(results)
             # 4. Formatar resposta
             response = self.format_response(user_question, results, product_context)
             

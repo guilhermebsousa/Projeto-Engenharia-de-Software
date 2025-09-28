@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>sTOK — Inicial</title>
+
+  <!-- Fonte Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS base (mesma origem :8000) -->
+  <link rel="stylesheet" href="/styles.css" />
+
+  <style>
+    /* ===== Estilos específicos desta página (facelift) ===== */
+
+    /* acentos e efeitos */
+    :root{
+      --glass: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      --ring: conic-gradient(from 180deg at 50% 50%, rgba(97,226,142,.35), rgba(97,226,142,0) 35% 65%, rgba(97,226,142,.35));
+    }
+
+    .brand__name { font-size: 20px; }
+
+    /* Top-right icons */
+    .icon-actions { display:inline-flex; align-items:center; gap:10px; position:relative; }
+    .icon-btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      width:40px; height:40px; border-radius:12px; border:1px solid var(--card-border);
+      background: var(--card); color: var(--text); box-shadow: var(--shadow);
+      transition: transform .08s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .icon-btn:hover{ box-shadow: 0 10px 24px rgba(0,0,0,.35); border-color: rgba(255,255,255,.2); transform: translateY(-1px); }
+    .icon-btn:active{ transform: translateY(1px); }
+    .icon-24{ width:22px; height:22px; }
+
+    .settings-menu{ position:absolute; top:56px; right:0; width:min(320px,92vw); }
+    .dropdown .item-row{ display:flex; align-items:center; gap:10px; padding:12px; border-radius:10px; color:var(--text); text-decoration:none; font-weight:500; user-select:none; }
+    .dropdown .item-row:hover{ background: rgba(255,255,255,.06); }
+    .item-icon{ width:18px; height:18px; opacity:.9; }
+    .item-text{ display:grid; line-height:1.2; }
+    .item-text small{ color:var(--muted); font-weight:400; }
+    .item-disabled{ opacity:.6; pointer-events:none; }
+    .item-badge{ margin-left:auto; font-size:11px; padding:2px 8px; border-radius:999px; background: rgba(255,255,255,.08); color: var(--muted); }
+
+    /* ===== Hero ===== */
+    main{
+      padding: clamp(20px, 4vw, 36px);
+      padding-top: 100px;
+      display: grid;
+      gap: 28px;
+    }
+
+    .hero{
+      width:100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      display:grid;
+      gap:16px;
+    }
+    .hero__headline{
+      display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+      padding:18px 20px; border-radius:20px; border:1px solid var(--card-border);
+      background: var(--glass);
+      position: relative;
+    }
+    .hero__headline::before{
+      content:""; position:absolute; inset:-1px; border-radius:20px;
+      background: var(--ring); filter: blur(28px); opacity:.35; pointer-events:none;
+    }
+    .hero__title{ margin:0; font-size: clamp(22px, 3.4vw, 34px); letter-spacing:.2px; }
+    .hero__subtitle{ margin:0; color:var(--muted); font-size: clamp(13px, 1.6vw, 16px); }
+
+    .hero__cta{
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; border-radius:999px; border:1px solid var(--card-border);
+      background: rgba(15,25,20,.6); color: var(--text); font-weight:600; font-size:13px;
+    }
+    .chip i{ width:8px; height:8px; border-radius:999px; display:inline-block; }
+    .i-green{ background:#61e28e; } .i-yellow{ background:#f0c420; } .i-red{ background:#ff5a5a; }
+
+    .cta-row{ display:flex; gap:10px; flex-wrap:wrap; }
+    .cta-row .btn{
+      height:40px; min-width:140px; border-radius:12px; padding:0 18px;
+      background: #61e28e; color:#0b1712; font-weight:800;
+    }
+
+    /* ===== Cards ===== */
+    .cards-grid{
+      margin:0 auto; width:100%; max-width:1200px;
+      display:grid; gap: 22px;
+      grid-template-columns: repeat(12, 1fr);
+    }
+    /* 4 col desktop, 2 col tablet, 1 col mobile */
+    .col-3{ grid-column: span 3; }
+    @media (max-width: 1100px){ .col-3{ grid-column: span 6; } }
+    @media (max-width: 560px){ .col-3{ grid-column: span 12; } }
+
+    .app-card{
+      position:relative; overflow:hidden;
+      display:flex; flex-direction:column; gap:12px; min-height:160px;
+      padding:20px; border-radius:18px; border:1px solid rgba(255,255,255,.08);
+      background: radial-gradient(1200px 200px at -10% -20%, rgba(97,226,142,.06), transparent 45%) , var(--glass);
+      color: var(--text); text-decoration:none;
+      transition: transform .18s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease;
+    }
+    .app-card::after{
+      content:""; position:absolute; inset:0; pointer-events:none;
+      background: radial-gradient(220px 120px at 120% -20%, rgba(97,226,142,.18), transparent 60%);
+      opacity:.35; transition: opacity .25s ease;
+    }
+    .app-card:hover{
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,.45);
+      border-color: rgba(255,255,255,.22);
+    }
+    .app-card:hover::after{ opacity:.55; }
+
+    .app-icon{
+      width:34px; height:34px; border-radius:12px; display:inline-flex; align-items:center; justify-content:center;
+      padding:8px; background: linear-gradient(90deg, var(--brand1), var(--brand2));
+      color:#0d1a13; box-shadow: 0 10px 20px rgba(72,215,127,.28);
+    }
+    .app-card h3{ margin: 6px 0 2px; font-size: 20px; font-weight: 800; letter-spacing:.2px; }
+    .app-card p{ color: var(--muted); margin:0; font-size:14px; }
+
+    /* Badge “novo” opcional */
+    .badge{
+      position:absolute; top:16px; right:16px; padding:4px 10px; border-radius:999px;
+      font-size:11px; font-weight:800; color:#0b1712; background:#61e28e;
+      box-shadow: 0 8px 18px rgba(97,226,142,.35);
+    }
+
+    .user-tag{ color: var(--muted); font-size:12px; margin-right:8px; }
+  </style>
+
+</head>
+<body>
+  <div class="wrap">
+    <!-- Top bar -->
+    <header class="topbar" aria-label="Barra superior">
+      <div class="brand" aria-label="Logo eSTOK">
+        <span class="brand__name">eSTOK</span>
+        <span class="brand__pill">Beta</span>
+      </div>
+
+      <div class="icon-actions">
+        <span id="whoami" class="user-tag" aria-live="polite">Carregando…</span>
+
+        <!-- Sino de notificações (placeholder) -->
+        <button class="icon-btn" id="btnBell" aria-label="Notificações" title="Notificações">
+          <svg class="icon-24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Zm7-6V11a7 7 0 0 0-14 0v5l-2 2v1h18v-1l-2-2Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <!-- Engrenagem de configurações -->
+        <button class="icon-btn" id="btnSettings" aria-haspopup="true" aria-expanded="false" aria-controls="settingsMenu" title="Configurações">
+          <svg class="icon-24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm8.94-3.1a7.97 7.97 0 0 0 0-.8l2.02-1.58a.5.5 0 0 0 .12-.64l-1.9-3.3a.5.5 0 0 0-.6-.22l-2.38.96c-.22-.12-.45-.24-.68-.4l-.36-2.55a.5.5 0 0 0-.5-.42h-3.8a.5.5 0 0 0-.5.42l-.36 2.55c-.23.1-.45.22-.68.35l-2.38-.96a.5.5 0 0 0-.6.22l-1.9 3.3a.5.5 0 0 0 .12.64L3.06 11.6c-.02.26-.02.53 0 .8l-2.02 1.58a.5.5 0 0 0-.12.64l1.9 3.3a.5.5 0 0 0 .6.22l2.38-.96c.22.14.45.26.68.36l.36 2.55a.5.5 0 0 0 .5.42h3.8a.5.5 0 0 0 .5-.42l.36-2.55c.23-.1.45-.22.68-.36l2.38.96a.5.5 0 0 0 .6-.22l1.9-3.3a.5.5 0 0 0-.12-.64L20.94 12.4Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <!-- Menu de configurações -->
+        <nav class="dropdown settings-menu" id="settingsMenu" data-open="false" role="menu" aria-label="Menu de configurações">
+          <!-- Administrar usuários (bloqueado) -->
+          <div class="item-row item-disabled" role="menuitem" aria-disabled="true" tabindex="-1" title="Função bloqueada">
+            <svg class="item-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M16 11V8a4 4 0 1 0-8 0v3M6 11h12v9H6v-9Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="item-text">
+              Administrar usuários
+              <small>Restrito</small>
+            </span>
+            <span class="item-badge">🔒</span>
+          </div>
+
+          <!-- Reportar problema -->
+          <a href="#" class="item-row" role="menuitem" tabindex="0">
+            <svg class="item-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="item-text">
+              Reportar problema
+              <small>Envie um feedback</small>
+            </span>
+          </a>
+
+          <!-- Ajuste de tema -->
+          <a href="#" class="item-row" role="menuitem" tabindex="0">
+            <svg class="item-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="item-text">
+              Ajuste de tema
+              <small>Claro/escuro</small>
+            </span>
+          </a>
+
+          <!-- Idioma -->
+          <a href="#" class="item-row" role="menuitem" tabindex="0">
+            <svg class="item-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 5h16M4 12h16M4 19h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="item-text">
+              Idioma
+              <small text-align:center>PT • EN • ES</small>
+            </span>
+          </a>
+
+          <!-- Sair -->
+          <button class="item-row" id="btnLogout" role="menuitem" tabindex="0" style="width:100%; background:none; border:none; text-align:left; cursor:pointer;">
+            <svg class="item-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M16 17l5-5-5-5M21 12H9M12 19a7 7 0 1 1 0-14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="item-text">
+              Sair
+              <small>Encerrar sessão</small>
+            </span>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main aria-label="Ações rápidas">
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero__headline">
+          <div>
+            <h1 class="hero__title">Bem-vindo ao <strong>eSTOK</strong></h1>
+            <p class="hero__subtitle">Gerencie cadastros, saídas e relatórios do seu estoque com rapidez.</p>
+          </div>
+
+          <div class="hero__cta">
+            <div class="chip"><i class="i-yellow"></i> Em breve: Notificações</div>
+            <div class="chip"><i class="i-red"></i> Sem integrações externas</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GRID DE ATALHOS -->
+      <section class="cards-grid">
+        <a class="app-card col-3" href="/cadastro.html">
+          <span class="app-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="icon-24" fill="none"><path d="M12 5v14M5 12h14" stroke="#0d1a13" stroke-width="2.2" stroke-linecap="round"/></svg>
+          </span>
+          <div>
+            <h3>Cadastro de produto</h3>
+            <p>Inclua novos itens no estoque.</p>
+          </div>
+        </a>
+
+        <a class="app-card col-3" href="/venda_retirada.html">
+          <span class="app-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="icon-24" fill="none"><path d="M3 7h18l-2 10H5L3 7Zm5 10v2a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <div>
+            <h3>Venda / Retirada</h3>
+            <p>Baixa rápida de produtos.</p>
+          </div>
+        </a>
+
+        <a class="app-card col-3" href="/editar.html">
+          <span class="badge">Novo fluxo</span>
+          <span class="app-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="icon-24" fill="none"><path d="M4 20h4l10-10-4-4L4 16v4z" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </span>
+          <div>
+            <h3>Editar Produtos</h3>
+            <p>Atualize cadastros existentes.</p>
+          </div>
+        </a>
+
+        <a class="app-card col-3" href="/relatorio.html">
+          <span class="app-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="icon-24" fill="none"><path d="M4 19V5m5 14V10m5 9V7m5 12V3" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <div>
+            <h3>Relatórios &amp; Dashboards</h3>
+            <p>Métricas e histórico do estoque.</p>
+          </div>
+        </a>
+
+        <a class="app-card col-3" href="/chatbot.html">
+          <span class="app-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="icon-24" fill="none"><path d="M21 15a4 4 0 0 1-4 4H9l-4 3v-3a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4h12a4 4 0 0 1 4 4v8Z" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <div>
+            <h3>Chatbot</h3>
+            <p>Atalhos e assistência ao operador.</p>
+          </div>
+        </a>
+      </section>
+    </main>
+
+
+    <footer class="footer">© 2025 sTOK — Todos os direitos reservados.</footer>
+  </div>
+
+  <script>
+    // ===== Sessão e base da API =====
+    const API_BASE = window.location.origin; // mesma origem (:8000)
+    const user = JSON.parse(sessionStorage.getItem('stokUser') || 'null');
+    if (!user) { window.location.href = '/index.html'; }
+    document.getElementById('whoami').textContent = `Conectado como ${user.username} (${user.role})`;
+
+    // ===== Menu de configurações =====
+    (function(){
+      const btnSettings = document.getElementById('btnSettings');
+      const menu = document.getElementById('settingsMenu');
+
+      function setOpen(open){
+        menu.dataset.open = open ? "true" : "false";
+        btnSettings.setAttribute('aria-expanded', open ? "true" : "false");
+      }
+
+      btnSettings.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setOpen(menu.dataset.open !== "true");
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!menu.contains(e.target) && e.target !== btnSettings) setOpen(false);
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') setOpen(false);
+      });
+
+      // Sair
+      document.getElementById('btnLogout').addEventListener('click', () => {
+        sessionStorage.removeItem('stokUser');
+        window.location.href = '/index.html';
+      });
+    })();
+
+    // Sino (placeholder)
+    document.getElementById('btnBell').addEventListener('click', () => {
+      alert('Central de notificações em breve.');
+    });
+  </script>
+</body>
+</html>

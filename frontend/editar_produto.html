@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>sTOK — Editar Produto</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    /* Estilos Gerais */
+    :root {
+      --container: 1200px;
+      --gap: 12px;
+      --pad: 14px;
+      --round: var(--radius);
+    }
+
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      line-height: 1.35;
+    }
+
+    /* Layout Principal */
+    .wrap {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 64px 1fr auto;
+    }
+
+    /* Topbar */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--card-border);
+      background: rgba(8, 15, 12, .9);
+      backdrop-filter: blur(8px);
+    }
+
+    .left-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background: var(--card);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    /* Marca */
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand__name {
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .brand__pill {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--brand1), var(--brand2));
+      color: #0d1a13;
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    /* Conteúdo Principal */
+    main {
+      padding: 18px 12px 24px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--container);
+      margin: 0 auto;
+      display: grid;
+      gap: calc(var(--gap) * 1.5);
+    }
+
+    /* Título da Página */
+    .page-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      text-align: center;
+      margin: 12px;
+    }
+
+    .page-title h1 {
+      margin: 0;
+      text-align: center;
+      font-size: clamp(20px, 2.6vw, 28px);
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+
+    /* Rodapé */
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 16px 12px;
+      border-top: 1px solid var(--card-border);
+    }
+
+    /* Formulário */
+    .form-card {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+  </style>
+
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="left-group">
+        <button class="back-btn" id="btnBack" title="Voltar para a lista">
+          <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+            <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="brand">
+          <span class="brand__name">sTOK</span>
+          <span class="brand__pill">Beta</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <div class="page-title">
+          <h1 style="text-align: center;">Editar Produto</h1>
+        </div>
+
+        <form id="formEditarProduto" class="card form-card">
+          <div class="field">
+            <label for="name">Nome</label>
+            <input id="name" name="name" type="text" required />
+          </div>
+          <div class="field">
+            <label for="brand">Marca</label>
+            <input id="brand" name="brand" type="text" />
+          </div>
+          <div class="field">
+            <label for="barcode">Código de barras</label>
+            <input id="barcode" name="barcode" type="text" />
+          </div>
+          <div class="field">
+            <label for="unit">Unidade</label>
+            <input id="unit" name="unit" type="text" />
+          </div>
+          <div class="field">
+            <label for="package_quantity">Quantidade por embalagem</label>
+            <input id="package_quantity" name="package_quantity" type="number" min="0" step="any"/>
+          </div>
+          <div class="field">
+            <label for="minimum_stock">Estoque mínimo</label>
+            <input id="minimum_stock" name="minimum_stock" type="number" min="0" step="any"/>
+          </div>
+          <div class="field">
+            <label for="suggested_price">Preço sugerido</label>
+            <input id="suggested_price" name="suggested_price" type="number" step="0.01" min="0" />
+          </div>
+          <div class="field">
+            <label for="current_quantity">Quantidade atual</label>
+            <input id="current_quantity" name="current_quantity" type="number" min="0" step="any"/>
+          </div>
+          <div class="field">
+            <label for="expiration_date">Validade</label>
+            <input id="expiration_date" name="expiration_date" type="date" />
+          </div>
+          <button class="btn" type="submit">Salvar alterações</button>
+        </form>
+      </div>
+    </main>
+
+    <footer class="footer">© 2025 sTOK — Todos os direitos reservados.</footer>
+  </div>
+
+  <script src="/utils.js"></script>
+
+  <script>
+    // usando  as variáveis `user` e `API_BASE` que foram criadas em utils.js
+    verificarSessao();
+
+    // Botão voltar
+    document.getElementById('btnBack').onclick = () => window.history.back();
+
+    // Carregar dados do produto
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('id');
+
+    async function carregarProduto() {
+      const r = await fetch(`${API_BASE}/api/users/${user.id}/products/${productId}`);
+      if (!r.ok) {
+        alert('Produto não encontrado!');
+        window.location.href = '/editar.html';
+        return;
+      }
+      const p = await r.json();
+
+      for (const k in p) {
+        const el = document.getElementById(k);
+        if (el) {
+          if (el.type === 'date' && p[k]) {
+            el.value = p[k].split('T')[0];
+          } else {
+            el.value = p[k] ?? '';
+          }
+        }
+      }
+    }
+    carregarProduto();
+
+    // Salvar alterações
+    document.getElementById('formEditarProduto').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const dados = Object.fromEntries(new FormData(this));
+
+      dados.package_quantity = dados.package_quantity ? parseFloat(dados.package_quantity) : null;
+      dados.minimum_stock = dados.minimum_stock ? parseFloat(dados.minimum_stock) : 0;
+      dados.suggested_price = dados.suggested_price ? parseFloat(dados.suggested_price) : null;
+      dados.current_quantity = dados.current_quantity ? parseFloat(dados.current_quantity) : 0;
+
+      if (!dados.expiration_date) {
+        dados.expiration_date = null;
+      }
+
+      const r = await fetch(`${API_BASE}/api/users/${user.id}/products/${productId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados)
+      });
+
+      if (r.ok) {
+        alert('Produto atualizado!');
+        window.location.href = '/editar.html';
+      } else {
+        const error = await r.json().catch(() => ({ detail: 'Erro ao conectar com a API.' }));
+        alert(`Erro ao atualizar produto: ${error.detail}`);
+      }
+    });
+  </script>
+</body>
+</html>

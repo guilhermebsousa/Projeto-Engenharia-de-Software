@@ -1,8 +1,16 @@
-SQLAlchemy >= 2.0.23
+SQLAlchemy >=2.0.36
 psycopg2-binary == 2.9.10
 werkzeug == 3.1.3
 python-dotenv == 1.1.1
 zxing-cpp == 2.3.0
 opencv-python == 4.12.0.88
-openai == 1.54.3
-streamlit
+greenlet>=3.0.3
+
+# Integração com o Frontend
+fastapi>=0.111
+uvicorn[standard]>=0.30
+pydantic>=2.7
+typing_extensions>=4.12.2
+
+# AI Agent
+openai>=1.0.0

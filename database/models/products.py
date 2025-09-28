@@ -25,8 +25,8 @@ class Product(Base):
     movements = relationship("Movement", back_populates="product")
     user = relationship("User", back_populates="products")
 
+    # database/models/products.py (apenas o __repr__)
     def __repr__(self):
-        return (
-            f"<Product(name={self.name}, stock={self.current_quantity}, "
-            f"owner={self.owner.username})>"
-        )
+        owner = self.user.username if self.user else "?"
+        return f"<Product(name={self.name}, stock={self.current_quantity}, owner={owner})>"
+        

@@ -6,7 +6,6 @@ from database.services import *
 from config import ENV
 
 
-
 if ENV != "development":
     raise EnvironmentError("Este script não deve ser executado em ambiente de produção.")
 
