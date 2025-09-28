@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>sTOK — Cadastro de Produto</title>
 
-  <!-- Fonte Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <!-- CSS base -->
   <link rel="stylesheet" href="styles.css" />
 
   <style>
@@ -71,13 +69,13 @@
       border: 1px solid var(--card-border); box-shadow: var(--shadow);
       display: none;
     }
-    .panel.open { display: block; }
+   .panel.open { display: block; }
 
     .field-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .field-3col { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; }
     .field-4col { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 12px; }
-    @media (max-width: 760px)  { .field-4col { grid-template-columns: 1fr 1fr; } }
-    @media (max-width: 520px)  { .field-3col, .field-4col { grid-template-columns: 1fr; } }
+    @media (max-width: 760px)  { .field-4col { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 520px)  { .field-3col, .field-4col { grid-template-columns: 1fr; } }
 
     /* Modal do leitor (câmera) */
     .modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,.55); z-index: 200; padding: 16px; }
@@ -90,15 +88,15 @@
     .modal-title { font-size: 18px; font-weight: 600; margin: 0; }
     .modal-actions { display: flex; gap: 8px; }
     .video-wrap { background: #0a140f; border: 1px solid var(--card-border); border-radius: 12px; padding: 8px; }
-    video { width: 100%; max-height: 44vh; border-radius: 10px; display: block; background: #000; }
+    /* A tag <video> foi substituída pelo conteúdo do script, mas mantemos o estilo para o container */
+    /* video { width: 100%; max-height: 44vh; border-radius: 10px; display: block; background: #000; } */ 
 
     .hint { color: var(--muted); font-size: 14px; margin-top: 8px; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <!-- Top bar -->
-    <header class="topbar" aria-label="Barra superior">
+        <header class="topbar" aria-label="Barra superior">
       <div class="left-group">
         <button class="back-btn" id="btnBack" title="Voltar para inicial">
           <svg class="icon-24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -113,8 +111,7 @@
       </div>
     </header>
 
-    <!-- Conteúdo principal -->
-    <main>
+        <main>
       <div class="page-title">
         <div>
           <h1>Cadastro de Produto</h1>
@@ -122,10 +119,8 @@
         </div>
       </div>
 
-      <!-- Cards de opções -->
-      <section class="cards-grid" aria-label="Opções de cadastro">
-        <!-- Opção 1: Leitor (câmera) -->
-        <div class="app-card">
+            <section class="cards-grid" aria-label="Opções de cadastro">
+                <div class="app-card">
           <span class="app-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" class="icon-24" fill="none">
               <path d="M3 7h18M3 17h18M7 7v10M17 7v10" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round"/>
@@ -138,8 +133,7 @@
           </div>
         </div>
 
-        <!-- Opção 2: Inserir código manual -->
-        <div class="app-card">
+                <div class="app-card">
           <span class="app-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" class="icon-24" fill="none">
               <path d="M4 17h16M4 7h8M4 12h12" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round"/>
@@ -152,8 +146,7 @@
           </div>
         </div>
 
-        <!-- Opção 3: Preencher todas as informações -->
-        <div class="app-card">
+                <div class="app-card">
           <span class="app-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" class="icon-24" fill="none">
               <path d="M4 20h16M7 4h10a2 2 0 0 1 2 2v10l-4 4H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" stroke="#0d1a13" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -167,8 +160,7 @@
         </div>
       </section>
 
-      <!-- Painel 2: Código manual (com quantidade e preço) -->
-      <section class="panel" id="panelManual" aria-labelledby="tituloManual">
+            <section class="panel" id="panelManual" aria-labelledby="tituloManual">
         <h2 id="tituloManual" style="margin-top:0;">Inserir código manualmente</h2>
         <form id="formCodigo" autocomplete="off">
           <div class="field-4col">
@@ -190,7 +182,7 @@
             </div>
           </div>
 
-          <div class="btn-row">
+        <div class="btn-row">
             <button class="btn" type="submit">Preencher formulário</button>
             <button class="btn" type="button" id="btnFecharManual">Fechar</button>
           </div>
@@ -198,13 +190,13 @@
         </form>
       </section>
 
-      <!-- Painel 3: Formulário completo (com quantidade e preço) -->
-      <section class="panel" id="panelCompleto" aria-labelledby="tituloCompleto">
+            <section class="panel" id="panelCompleto" aria-labelledby="tituloCompleto">
         <h2 id="tituloCompleto" style="margin-top:0;">Cadastrar produto (completo)</h2>
         <form id="formCompleto" autocomplete="on" novalidate>
           <div class="field">
             <label for="nomeProduto">Nome do produto</label>
             <input id="nomeProduto" name="nomeProduto" type="text" placeholder="Ex.: Smartphone XYZ 128GB" required />
+            <p class="hint">Se o nome não for preenchido após o leitor, será sugerido um nome.</p>
           </div>
 
           <div class="field-3col">
@@ -223,7 +215,7 @@
           </div>
 
           <div class="field">
-            <label for="preco">Preço</label>
+            <label for="preco">Preço (sugerido e de compra)</label>
             <input id="preco" name="preco" type="number" step="0.01" inputmode="decimal" placeholder="Ex.: 1999.90" />
           </div>
 
@@ -231,19 +223,17 @@
             <button class="btn" type="submit">Salvar produto</button>
             <button class="btn" type="button" id="btnFecharCompleto">Fechar</button>
           </div>
-          <p class="hint">Você pode cadastrar vários itens com o mesmo código; diferencie por validade/lote se necessário.</p>
+          <p class="hint">Você pode cadastrar vários itens com o mesmo código; diferencie por validade/lote se necessário. A quantidade informada será o estoque inicial.</p>
         </form>
       </section>
     </main>
 
-    <!-- Rodapé -->
-    <footer class="footer">
+        <footer class="footer">
       © 2025 sTOK — Todos os direitos reservados.
     </footer>
   </div>
 
-  <!-- Modal: Leitor de código de barras (câmera) -->
-  <div class="modal" id="modalLeitor" aria-hidden="true" aria-labelledby="tituloLeitor" role="dialog">
+    <div class="modal" id="modalLeitor" aria-hidden="true" aria-labelledby="tituloLeitor" role="dialog">
     <div class="modal-card">
       <div class="modal-head">
         <h3 class="modal-title" id="tituloLeitor">Leitor de código de barras</h3>
@@ -253,12 +243,9 @@
       </div>
 
       <div class="video-wrap">
-        <!-- IMPORTANTE: autoplay + playsinline + muted (iOS) -->
-        <video id="video" playsinline autoplay muted></video>
-      </div>
+              </div>
 
-      <!-- Campos para pré-preencher via leitor -->
-      <form id="formLeitor" class="panel open" style="margin-top:12px; padding:12px;">
+            <form id="formLeitor" class="panel open" style="margin-top:12px; padding:12px;">
         <div class="field-4col">
           <div class="field">
             <label for="codigoLeitor">Código de barras</label>
@@ -284,259 +271,281 @@
         <p class="hint">Após ler o código, ajuste quantidade/preço e clique em “Preencher formulário”.</p>
       </form>
 
-      <p class="hint">A leitura/decodificação será integrada depois (ZXing/QuaggaJS). O código pode ser preenchido automaticamente no campo acima.</p>
+      <p class="hint">A leitura é feita pelo leitor externo conectado ao servidor Python.</p>
     </div>
   </div>
 
   <script>
-    // --- Navegação: voltar para inicial ---
+    // --- Navegação: voltar para inicial (mantido) ---
     document.getElementById('btnBack').addEventListener('click', () => {
-      window.location.href = 'inicial.html';
+        window.location.href = 'inicial.html';
     });
 
-    // --- Toggles de painéis ---
+    // --- Toggles de painéis (mantido) ---
     const panelManual = document.getElementById('panelManual');
     const panelCompleto = document.getElementById('panelCompleto');
 
     document.getElementById('btnAbrirManual').addEventListener('click', () => {
-      panelCompleto.classList.remove('open');
-      panelManual.classList.add('open');
-      document.getElementById('codigoBarras').focus();
+        panelCompleto.classList.remove('open');
+        panelManual.classList.add('open');
+        document.getElementById('codigoBarras').focus();
     });
     document.getElementById('btnFecharManual').addEventListener('click', () => {
-      panelManual.classList.remove('open');
+        panelManual.classList.remove('open');
     });
 
     document.getElementById('btnAbrirCompleto').addEventListener('click', () => {
-      panelManual.classList.remove('open');
-      panelCompleto.classList.add('open');
-      document.getElementById('nomeProduto').focus();
+        panelManual.classList.remove('open');
+        panelCompleto.classList.add('open');
+        document.getElementById('nomeProduto').focus();
     });
     document.getElementById('btnFecharCompleto').addEventListener('click', () => {
-      panelCompleto.classList.remove('open');
+        panelCompleto.classList.remove('open');
     });
 
-    // ---------- LEITOR (CÂMERA) ----------
+    // ==================================================
+    // ---------- LEITOR (API DO BACKEND) MODIFICADO ----------
+    // ==================================================
     const modalLeitor = document.getElementById('modalLeitor');
-    const videoEl = document.getElementById('video');
-    let streamRef = null;
+    const modalTitle = document.getElementById('tituloLeitor');
+    const videoWrap = modalLeitor.querySelector('.video-wrap');
+    const btnFecharLeitor = document.getElementById('btnFecharLeitor');
 
-    function stopStream() {
-      if (streamRef) { try { streamRef.getTracks().forEach(t => t.stop()); } catch(_) {} streamRef = null; }
-      try { videoEl.pause(); videoEl.srcObject = null; } catch(_) {}
-    }
+    // Remove o elemento <video> e adiciona o placeholder de espera
+    videoWrap.innerHTML = `
+        <div id="scannerPlaceholder" style="text-align:center; padding: 40px; min-height: 100px;">
+            <h3>Aguardando leitura...</h3>
+            <p style="color:var(--muted); margin: 0;">O sistema está ativando a câmera no servidor. Por favor, aponte o código para a webcam física.</p>
+        </div>
+    `;
 
-    async function getBackCameraDeviceId() {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const videos = devices.filter(d => d.kind === 'videoinput');
-      if (videos.length === 0) return null;
-      const backLike = videos.find(d => /back|traseira|rear|environment/i.test(d.label || ''));
-      return (backLike || videos[videos.length - 1]).deviceId;
-    }
+    // A API_BASE e 'user' são definidas abaixo, mas reuso aqui para as funções
+    const API_BASE = window.location.origin;
+    const user = JSON.parse(sessionStorage.getItem('stokUser') || 'null');
 
-    async function openWithConstraints(constraints) {
-      stopStream();
-      const s = await navigator.mediaDevices.getUserMedia(constraints);
-      streamRef = s;
-      videoEl.srcObject = s;
-      try { await videoEl.play(); } catch(_) {}
-    }
+    // Função de chamada à API do scanner
+    async function chamarScannerAPI(userId) {
+        const url = `${API_BASE}/api/users/${userId}/scan`;
+        
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        });
 
-    async function abrirLeitor() {
-      if (!('mediaDevices' in navigator) || !('getUserMedia' in navigator.mediaDevices)) {
-        alert('Seu navegador não suporta captura de câmera.');
-        return;
-      }
-      const isLocalhost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-      if (location.protocol !== 'https:' && !isLocalhost) {
-        alert('Para acessar a câmera é preciso usar HTTPS (ou rodar em localhost).');
-        return;
-      }
-
-      modalLeitor.setAttribute('aria-hidden', 'false');
-
-      try { // 1) environment ideal
-        await openWithConstraints({ video: { facingMode: { ideal: 'environment' } }, audio: false });
-        return;
-      } catch(e1) { console.warn('fallback 1', e1); }
-
-      try { // 2) environment string
-        await openWithConstraints({ video: { facingMode: 'environment' }, audio: false });
-        return;
-      } catch(e2) { console.warn('fallback 2', e2); }
-
-      try { // 3) permissão mínima + escolher deviceId traseiro
-        await openWithConstraints({ video: true, audio: false });
-        stopStream();
-        const backId = await getBackCameraDeviceId();
-        if (backId) {
-          await openWithConstraints({ video: { deviceId: { exact: backId } }, audio: false });
-          return;
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ detail: 'Erro desconhecido.' }));
+            throw new Error(errorData.detail || 'Falha na leitura do scanner API.');
         }
-      } catch(e3) { console.warn('fallback 3', e3); }
-
-      try { // 4) qualquer câmera
-        await openWithConstraints({ video: true, audio: false });
-        return;
-      } catch(e4) {
-        console.error('Não foi possível abrir a câmera:', e4);
-        alert('Não foi possível acessar a câmera. Verifique permissões do navegador.');
-        fecharLeitor();
-      }
+        
+        return response.json();
     }
 
+    // Função que abre o modal e chama a API
+    async function abrirLeitorAPI() {
+        if (!user || !user.id) {
+            alert('Sessão expirada ou usuário não logado. Redirecionando.');
+            window.location.href = '/index.html';
+            return;
+        }
+        
+        // 1. Abrir modal e mostrar mensagem de espera
+        modalLeitor.setAttribute('aria-hidden', 'false');
+        modalTitle.textContent = "Aguardando leitura do servidor...";
+        btnFecharLeitor.disabled = true; // Bloqueia fechar enquanto a API está rodando
+        
+        try {
+            // 2. Chama a API. O cliente (browser) aguarda a resposta do servidor.
+            const result = await chamarScannerAPI(user.id);
+            
+            if (result.barcode) {
+                const code = result.barcode;
+                let message = `Código lido: ${code}`;
+                
+                // Se o produto já estiver cadastrado, avisa o usuário.
+                if (result.product) {
+                    message += ` (ATENÇÃO: Produto "${result.product.name}" já existe!)`;
+                }
+
+                modalTitle.textContent = message;
+                document.getElementById('codigoLeitor').value = code;
+                
+                // Preenche o preço sugerido, se existir e for uma informação útil para o cadastro
+                if (result.product && result.product.suggested_price) {
+                    document.getElementById('precoLeitor').value = Number(result.product.suggested_price).toFixed(2);
+                }
+
+                alert(message + ". Preencha os detalhes e clique em \"Preencher formulário\".");
+            } else {
+                alert('Nenhum código foi lido ou houve um problema no scanner do servidor.');
+            }
+
+        } catch (error) {
+            console.error('Erro na chamada do scanner:', error);
+            alert(`Erro ao tentar ler o código: ${error.message}`);
+        } finally {
+            // 3. Independentemente do resultado, libera o botão.
+            btnFecharLeitor.disabled = false;
+        }
+    }
+    
+    // Função de fechar (simplificada, pois não há stream para parar)
     function fecharLeitor() {
-      modalLeitor.setAttribute('aria-hidden', 'true');
-      stopStream();
+        modalLeitor.setAttribute('aria-hidden', 'true');
+        modalTitle.textContent = "Leitor de código de barras"; // Resetar título
     }
 
-    document.getElementById('btnAbrirLeitor').addEventListener('click', abrirLeitor);
+    document.getElementById('btnAbrirLeitor').addEventListener('click', abrirLeitorAPI);
     document.getElementById('btnFecharLeitor').addEventListener('click', fecharLeitor);
     modalLeitor.addEventListener('click', (e) => { if (e.target === modalLeitor) fecharLeitor(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalLeitor.getAttribute('aria-hidden') === 'false') fecharLeitor(); });
+    
+    // As funções de câmera do frontend (stopStream, openWithConstraints, etc.) foram removidas.
 
-    // --- Fluxo: inserir código manual e "preencher" (com qtd e preço) ---
+    // --- Fluxo: inserir código manual e "preencher" (com qtd e preço) (mantido) ---
     document.getElementById('formCodigo').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const code = (document.getElementById('codigoBarras').value || '').trim();
-      const qtd  = Math.max(1, parseInt(document.getElementById('qtdManual').value || '1', 10));
-      const preco = parseFloat(document.getElementById('precoManual').value || '0') || 0;
-      const val  = (document.getElementById('validadeManual').value || '');
+        e.preventDefault();
+        const code = (document.getElementById('codigoBarras').value || '').trim();
+        const qtd  = Math.max(1, parseInt(document.getElementById('qtdManual').value || '1', 10));
+        const preco = parseFloat(document.getElementById('precoManual').value || '0') || 0;
+        const val  = (document.getElementById('validadeManual').value || '');
 
-      if (!code) { alert('Digite um código de barras.'); return; }
+        if (!code) { alert('Digite um código de barras.'); return; }
 
-      // Abre formulário completo com dados
-      panelManual.classList.remove('open');
-      panelCompleto.classList.add('open');
+        // Abre formulário completo com dados
+        panelManual.classList.remove('open');
+        panelCompleto.classList.add('open');
 
-      document.getElementById('codigoCompleto').value = code;
-      document.getElementById('quantidade').value = qtd;
-      document.getElementById('preco').value = preco ? preco.toFixed(2) : '';
-      if (val) document.getElementById('validade').value = val;
+        document.getElementById('codigoCompleto').value = code;
+        document.getElementById('quantidade').value = qtd;
+        document.getElementById('preco').value = preco ? preco.toFixed(2) : '';
+        if (val) document.getElementById('validade').value = val;
 
-      if (!document.getElementById('nomeProduto').value) {
-        document.getElementById('nomeProduto').value = 'Produto ' + code.slice(-4);
-      }
+        if (!document.getElementById('nomeProduto').value) {
+            document.getElementById('nomeProduto').value = 'Produto ' + code.slice(-4);
+        }
 
-      alert(`Código ${code} preparado com quantidade ${qtd} e preço ${preco ? preco.toFixed(2) : '—'}. Ajuste e salve.`);
+        alert(`Código ${code} preparado com quantidade ${qtd} e preço ${preco ? preco.toFixed(2) : '—'}. Ajuste e salve.`);
     });
 
-    // --- Fluxo: leitor envia para o formulário (com qtd e preço) ---
+    // --- Fluxo: leitor envia para o formulário (com qtd e preço) (mantido) ---
     document.getElementById('formLeitor').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const code = (document.getElementById('codigoLeitor').value || '').trim();
-      const qtd  = Math.max(1, parseInt(document.getElementById('qtdLeitor').value || '1', 10));
-      const preco = parseFloat(document.getElementById('precoLeitor').value || '0') || 0;
-      const val  = (document.getElementById('validadeLeitor').value || '');
+        e.preventDefault();
+        const code = (document.getElementById('codigoLeitor').value || '').trim();
+        const qtd  = Math.max(1, parseInt(document.getElementById('qtdLeitor').value || '1', 10));
+        const preco = parseFloat(document.getElementById('precoLeitor').value || '0') || 0;
+        const val  = (document.getElementById('validadeLeitor').value || '');
 
-      if (!code) { alert('Informe o código lido.'); return; }
+        if (!code) { alert('Informe o código lido.'); return; }
 
-      fecharLeitor();
-      panelCompleto.classList.add('open');
-      document.getElementById('codigoCompleto').value = code;
-      document.getElementById('quantidade').value = qtd;
-      document.getElementById('preco').value = preco ? preco.toFixed(2) : '';
-      if (val) document.getElementById('validade').value = val;
+        fecharLeitor();
+        panelCompleto.classList.add('open');
+        document.getElementById('codigoCompleto').value = code;
+        document.getElementById('quantidade').value = qtd;
+        document.getElementById('preco').value = preco ? preco.toFixed(2) : '';
+        if (val) document.getElementById('validade').value = val;
 
-      if (!document.getElementById('nomeProduto').value) {
-        document.getElementById('nomeProduto').value = 'Produto ' + code.slice(-4);
-      }
+        // Sugere um nome, se o campo estiver vazio
+        if (!document.getElementById('nomeProduto').value) {
+            document.getElementById('nomeProduto').value = 'Produto ' + code.slice(-4);
+        }
     });
 
     // ===========================
     //  INTEGRAÇÃO REAL COM API
     // ===========================
-    const API_BASE = window.location.origin;
-    const user = JSON.parse(sessionStorage.getItem('stokUser') || 'null');
+    // A API_BASE e 'user' são definidos acima.
     if (!user) window.location.href = '/index.html';
 
     function toISODateOrNull(d) {
-      if (!d) return null;
-      return new Date(d + 'T00:00:00').toISOString();
+        if (!d) return null;
+        // Tenta criar uma data ISO para evitar problemas de fuso horário, assumindo a data no início do dia.
+        return new Date(d + 'T00:00:00').toISOString(); 
     }
 
     async function criarProduto(payload) {
-      const url = `${API_BASE}/api/users/${user.id}/products`;
-      const r = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type':'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (!r.ok) {
-        const t = await r.text().catch(()=> '');
-        throw new Error(`Falha ao criar produto (${r.status}). ${t}`);
-      }
-      return r.json();
+        const url = `${API_BASE}/api/users/${user.id}/products`;
+        const r = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type':'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (!r.ok) {
+            const errorData = await r.json().catch(()=> ({ detail: 'Erro ao criar produto.' }));
+            throw new Error(`Falha ao criar produto (${r.status}). Detalhe: ${errorData.detail || errorData.message || 'Erro desconhecido.'}`);
+        }
+        return r.json();
     }
 
     async function lancarMovimentacaoEntrada({ product_idF, quantity, purchase_price, expiration_date, note }) {
-      const url = `${API_BASE}/api/users/${user.id}/movements`;
-      const r = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type':'application/json' },
-        body: JSON.stringify({
-          product_idF,
-          type: 'IN',
-          quantity,
-          purchase_price,
-          sale_price: null,
-          note: note || 'Entrada inicial via cadastro',
-          expiration_date
-        })
-      });
-      if (!r.ok) {
-        const t = await r.text().catch(()=> '');
-        throw new Error(`Falha ao lançar movimentação (${r.status}). ${t}`);
-      }
-      return r.json();
+        const url = `${API_BASE}/api/users/${user.id}/movements`;
+        const r = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type':'application/json' },
+            body: JSON.stringify({
+                product_idF,
+                type: 'IN', // Movimentação de ENTRADA
+                quantity,
+                purchase_price,
+                sale_price: null, // Não aplicável na entrada
+                note: note || 'Entrada inicial via cadastro',
+                expiration_date
+            })
+        });
+        if (!r.ok) {
+            const errorData = await r.json().catch(()=> ({ detail: 'Erro ao lançar movimentação.' }));
+            throw new Error(`Falha ao lançar movimentação (${r.status}). Detalhe: ${errorData.detail || errorData.message || 'Erro desconhecido.'}`);
+        }
+        return r.json();
     }
 
     // --- Salvar produto (REAL) ---
     document.getElementById('formCompleto').addEventListener('submit', async (e) => {
-      e.preventDefault();
+        e.preventDefault();
 
-      const nome      = document.getElementById('nomeProduto').value.trim();
-      const codigo    = (document.getElementById('codigoCompleto').value || '').trim();
-      const validade  = document.getElementById('validade').value || '';
-      const qtd       = Math.max(1, parseInt(document.getElementById('quantidade').value || '1', 10));
-      const preco     = parseFloat(document.getElementById('preco').value || '0') || 0;
+        // 1. Coleta e validação dos dados do formulário
+        const nome      = document.getElementById('nomeProduto').value.trim();
+        const codigo    = (document.getElementById('codigoCompleto').value || '').trim(); 
+        const validade  = document.getElementById('validade').value || '';
+        const qtd       = Math.max(1, parseInt(document.getElementById('quantidade').value || '1', 10));
+        const preco     = parseFloat(document.getElementById('preco').value || '0') || 0;
 
-      if (!nome) { alert('Informe o nome do produto.'); return; }
+        if (!nome) { alert('Informe o nome do produto.'); return; }
+        if (!user || !user.id) { alert('Sessão expirada. Faça login novamente.'); return; }
 
-      // ProductIn exige "unit". Usaremos 'un' por padrão.
-      const productPayload = {
-        barcode: codigo || String(Date.now()),
-        name: nome,
-        brand: null,
-        unit: 'un',
-        package_quantity: null,
-        minimum_stock: 0,
-        suggested_price: preco || null,
-        current_quantity: 0, // será ajustado via movimentação
-        expiration_date: toISODateOrNull(validade)
-      };
+        // 2. Monta o payload do produto (ProductIn)
+        const productPayload = {
+            barcode: codigo || String(Date.now()), // Garante um código de barras
+            name: nome,
+            brand: null, 
+            unit: 'un', // Padrão
+            package_quantity: null, 
+            minimum_stock: 0, 
+            suggested_price: preco || null,
+            current_quantity: 0, // A quantidade real será ajustada na movimentação
+            expiration_date: toISODateOrNull(validade)
+        };
 
-      try {
-        // 1) Cria o produto
-        const produto = await criarProduto(productPayload);
+        try {
+            // 3. Cria o produto (POST /api/users/{user_id}/products)
+            const produto = await criarProduto(productPayload);
 
-        // 2) Lança ENTRADA no estoque
-        await lancarMovimentacaoEntrada({
-          product_idF: produto.id,
-          quantity: qtd,
-          purchase_price: preco || 0,
-          expiration_date: toISODateOrNull(validade),
-          note: `Entrada inicial do produto "${produto.name}"`
-        });
+            // 4. Lança ENTRADA no estoque (POST /api/users/{user_id}/movements)
+            await lancarMovimentacaoEntrada({
+                product_idF: produto.id,
+                quantity: qtd,
+                purchase_price: preco || 0, 
+                expiration_date: toISODateOrNull(validade),
+                note: `Entrada inicial do produto "${produto.name}"`
+            });
 
-        alert('Produto cadastrado e estoque lançado com sucesso!');
-        e.target.reset();
-        // Opcional: redirecionar para o relatório
-        // window.location.href = '/inicial.html';
-      } catch (err) {
-        console.error(err);
-        alert(err.message || 'Erro ao salvar produto.');
-      }
+            alert('✅ Produto cadastrado e estoque lançado com sucesso!');
+            e.target.reset();
+            // Volta para a página de opções após o cadastro
+            panelCompleto.classList.remove('open'); 
+        } catch (err) {
+            console.error(err);
+            alert(err.message || '❌ Erro ao salvar produto.');
+        }
     });
   </script>
 </body>
