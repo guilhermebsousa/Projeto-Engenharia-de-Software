@@ -11,14 +11,15 @@ def create_movement(
     type: str,  # "IN" | "OUT" | "LOSS"
     purchase_price: float = None,
     sale_price: float = None,
-    origin: str = None,
-    destination: str = None,
     note: str = None,
     expiration_date=None,
 ):
+
     product = db.query(Product).filter(
         Product.id == product_idF, Product.user_idF == user_idF
     ).first()
+
+
     if not product:
         raise ValueError("Produto não encontrado ou não pertence a este usuário")
 
@@ -38,7 +39,7 @@ def create_movement(
         if (product.current_quantity or 0) < quantity:
             raise ValueError("Estoque insuficiente para saída")
         if sale_price is None:
-            raise ValueError("Preço de venda é obrigatório para saídas")
+            sale_price = product.suggested_price  # Usa preço sugerido se não fornecido
         product.current_quantity = (product.current_quantity or 0) - quantity
 
     elif mtype == MovementType.LOSS:

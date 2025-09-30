@@ -195,7 +195,7 @@ select:focus {
             <div class="field">
               <label for="tipoManual">Tipo</label>
               <select id="tipoManual" name="tipoManual">
-                <option value="venda">Venda</option>
+                <option value="venda" selected>Venda</option>
                 <option value="retirada">Retirada</option>
               </select>
             </div>
@@ -229,8 +229,8 @@ select:focus {
             <div class="field">
               <label for="tipo">Tipo</label>
               <select id="tipo" name="tipo">
-                <option value="venda">Venda</option>
-                <option value="retirada">Retirada</option>
+                <option value="OUT">Venda</option>
+                <option value="LOSS">Retirada</option>
               </select>
             </div>
             <div class="field">
@@ -290,8 +290,8 @@ select:focus {
           <div class="field">
             <label for="tipoLeitor">Tipo</label>
             <select id="tipoLeitor" name="tipoLeitor">
-              <option value="venda">Venda</option>
-              <option value="retirada">Retirada</option>
+              <option value="OUT">Venda</option>
+              <option value="LOSS">Retirada</option>
             </select>
           </div>
           <div class="field">
@@ -313,8 +313,9 @@ select:focus {
       <p class="hint">A leitura/decodificação será integrada depois (ZXing/QuaggaJS). O código pode ser preenchido automaticamente acima.</p>
     </div>
   </div>
-
+  <script src="/utils.js"></script>
   <script>
+    verificarSessao();
     // --- Navegação: voltar para inicial ---
     document.getElementById('btnBack').addEventListener('click', () => {
       window.location.href = 'inicial.html';
@@ -462,18 +463,62 @@ select:focus {
     });
 
     // --- Confirmar baixa (mock) ---
-    document.getElementById('formCompleto').addEventListener('submit', (e) => {
+    document.getElementById('formCompleto').addEventListener('submit', async (e) => {
       e.preventDefault();
+      
+      const codigo = document.getElementById('codigoCompleto').value.trim();
+      if (!codigo) {
+        alert("Por favor, digite o código de barras do produto.");
+        return;
+      }
+
+      let produto;
+      try {
+        // Usa a constante `API_BASE` e `user` de utils.js
+        const prodRes = await fetch(`${API_BASE}/api/users/${user.id}/products/barcode/${encodeURIComponent(codigo)}`);
+
+        if (!prodRes.ok) {
+          alert("Produto não encontrado com este código de barras!");
+          return;
+        }
+        produto = await prodRes.json();
+      } catch (err) {
+        console.error("Erro ao buscar produto:", err);
+        alert("Erro de conexão ao tentar buscar o produto.");
+        return;
+      }
+      
       const payload = {
-        codigo: (document.getElementById('codigoCompleto').value || '').trim() || null,
-        tipo: document.getElementById('tipo').value, // venda | retirada
-        quantidade: Math.max(1, parseInt(document.getElementById('quantidade').value || '1', 10)),
-        preco: parseFloat(document.getElementById('preco').value || '0') || 0,
-        observacao: (document.getElementById('observacao').value || '').trim() || null
+        product_idF: produto.id,
+        type: "OUT",
+        quantity: Math.max(1, parseInt(document.getElementById('quantidade').value || '1', 10)),
+        // Envia o preço de venda apenas se for do tipo 'OUT' (Venda)
+        sale_price: (parseFloat(document.getElementById('preco').value || '0') || null),
+        note: (document.getElementById('observacao').value || '').trim() || null
       };
-      console.log('Baixa de estoque:', payload);
-      alert(`Baixa registrada (exemplo): ${payload.tipo} de ${payload.quantidade} ${payload.codigo ? `do código ${payload.codigo}` : ''}.`);
-      // Integração real: enviar payload ao backend (API)
+
+      try {
+        const res = await fetch(`${API_BASE}/api/users/${user.id}/movements`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          alert("Erro: " + (err.detail || "Falha ao registrar baixa"));
+          return;
+        }
+
+        const data = await res.json();
+        alert(`Movimentação registrada com sucesso!`);
+        e.target.reset(); // Limpa o formulário
+        panelCompleto.classList.remove('open'); // Fecha o painel
+
+      } catch (err) {
+        console.error(err);
+        alert("Erro de conexão com o servidor.");
+      }
     });
   </script>
 </body>
