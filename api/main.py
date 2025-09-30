@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
-
+from api.schemas import SignupIn
 from api.schemas import LoginIn, UserOut, ProductIn, ProductOut, MovementIn
 from api.deps import get_db
 from database.models.users import RoleEnum, User
@@ -57,15 +57,27 @@ def login(payload: LoginIn, db: Session = Depends(get_db)):
     )
 
 @app.post("/api/signup", response_model=UserOut)
-def signup(user: LoginIn, db: Session = Depends(get_db)):
-    # Verifica se já existe
-    db_user = get_user_by_username(db, user.username)
+def signup(payload: SignupIn, db: Session = Depends(get_db)):
+    db_user = get_user_by_username(db, payload.username)
     if db_user:
         raise HTTPException(status_code=400, detail="Usuário já existe")
 
-    # Cria usuário com role default (ex.: OPERATOR)
-    new_user = create_user(db, username=user.username, password=user.password, role=RoleEnum.OPERATOR)
-    return new_user
+    new_user = create_user(
+        db,
+        username=payload.username,
+        password=payload.password,
+        role=RoleEnum.OPERATOR,      # ou o role que desejar
+        email=payload.email,
+        full_name=payload.full_name
+    )
+    return UserOut(
+        id=new_user.id,
+        username=new_user.username,
+        full_name=new_user.full_name,
+        role=new_user.role.value,
+        email=new_user.email,
+    )
+
 
 # Seed simples (dev)
 @app.post("/api/users/seed", response_model=UserOut)

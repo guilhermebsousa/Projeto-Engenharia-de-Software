@@ -1,11 +1,18 @@
 from database.models.users import User, RoleEnum
 from sqlalchemy.orm import Session
 from werkzeug.security import generate_password_hash, check_password_hash
+from typing import Optional
 
 # Criar usuário
-def create_user(db: Session, username: str, password: str, role: RoleEnum):
+def create_user(db: Session, username: str, password: str, role: RoleEnum, email: str, full_name: Optional[str] = None):
     hashed_password = generate_password_hash(password)
-    new_user = User(username=username, password_hash=hashed_password, role=role)
+    new_user = User(
+        username=username,
+        password_hash=hashed_password,
+        role=role,
+        email=email,
+        full_name=full_name
+    )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)

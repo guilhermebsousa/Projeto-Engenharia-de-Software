@@ -62,28 +62,6 @@ document.getElementById('forgot').addEventListener('click', (e) => {
   alert('Fluxo de recuperação de senha em breve.');
 });
 
-// Fluxo de criação de conta
-document.getElementById('signup').addEventListener('click', function (e) {
-  e.preventDefault();
-  const username = prompt('Digite o nome de usuário:');
-  const password = prompt('Digite a senha:');
-  if (!username || !password) return;
-
-  fetch('api/signup', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password })
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.detail) {
-        alert('Erro: ' + data.detail);
-      } else {
-        alert('Conta criada com sucesso!');
-      }
-    });
-});
-
 // Botão voltar
 document.getElementById('btnBack').onclick = () => window.location.href = '/editar.html';
 
