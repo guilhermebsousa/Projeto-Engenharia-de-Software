@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>sTOK — Criar Conta</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    .required::after {
+      content: " *";
+      color: #00D149;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand__name">sTOCK</span>
+        <span class="brand__pill">Beta</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="card" aria-labelledby="titulo-signup">
+        <h1 id="titulo-signup">Criar Conta</h1>
+        <p class="subtitle">Preencha os campos obrigatórios para se cadastrar.</p>
+
+        <form id="signupForm">
+          <div class="field">
+            <label for="username" class="required">Usuário</label>
+            <input id="username" name="username" type="text" placeholder="Seu usuário" required />
+          </div>
+
+          <div class="field">
+            <label for="password" class="required">Senha</label>
+            <input id="password" name="password" type="password" minlength="3" placeholder="Sua senha" required />
+          </div>
+
+          <div class="field">
+            <label for="email" class="required">E-mail</label>
+            <input id="email" name="email" type="email" placeholder="seuemail@empresa.com" required />
+          </div>
+
+          <div class="field">
+            <label for="full_name">Nome da empresa</label>
+            <input id="full_name" name="full_name" type="text" placeholder="Nome da sua empresa" />
+          </div>
+
+          <button class="btn" type="submit">Cadastrar</button>
+          <p class="helper"><a href="/">Já tenho conta</a></p>
+        </form>
+      </section>
+    </main>
+  </div>
+</body>
+<script src="/signup.js"></script>
+</html>

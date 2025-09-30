@@ -6,6 +6,12 @@ class LoginIn(BaseModel):
     username: str
     password: str
 
+class SignupIn(BaseModel):
+    username: str
+    password: str
+    email: str
+    full_name: Optional[str] = None
+
 class UserOut(BaseModel):
     id: str
     username: str

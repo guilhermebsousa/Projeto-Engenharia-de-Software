@@ -160,7 +160,7 @@ input {
   font-family: 'Poppins', sans-serif;
   transition: border-color .15s ease, box-shadow .15s ease, background .2s ease;
 }
-input::placeholder { color: #aacbb9; }
+input::placeholder { color: #aacbb985; }
 input:focus {
   border-color: var(--focus);
   box-shadow: 0 0 0 3px rgba(155, 245, 179, .15);
