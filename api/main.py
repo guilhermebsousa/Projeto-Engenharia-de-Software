@@ -144,6 +144,27 @@ def get_single_product(user_id: str, product_id: str, db: Session = Depends(get_
         expiration_date=p.expiration_date,
     )
 
+@app.get("/api/users/{user_id}/products/barcode/{barcode}", response_model=ProductOut)
+def get_product_by_barcode_endpoint(user_id: str, barcode: str, db: Session = Depends(get_db)):
+    p = get_by_barcode(db, barcode=barcode, user_id=user_id)
+
+    if not p:
+        raise HTTPException(status_code=404, detail="Produto não encontrado")
+
+    return ProductOut(
+        id=p.id,
+        user_idF=p.user_idF,
+        barcode=p.barcode,
+        name=p.name,
+        brand=p.brand,
+        unit=p.unit,
+        package_quantity=p.package_quantity,
+        minimum_stock=p.minimum_stock,
+        suggested_price=p.suggested_price,
+        current_quantity=p.current_quantity,
+        expiration_date=p.expiration_date,
+    )
+
 @app.post("/api/users/{user_id}/products", response_model=ProductOut, status_code=201)
 def post_product(user_id: str, payload: ProductIn, db: Session = Depends(get_db)):
     p = create_product(db, user_idF=user_id, **payload.dict())
@@ -190,6 +211,7 @@ def put_product(user_id: str, product_id: str, payload: ProductIn, db: Session =
 # ---- MOVEMENTS ----
 @app.post("/api/users/{user_id}/movements")
 def post_movement(user_id: str, payload: MovementIn, db: Session = Depends(get_db)):
+
     m = create_movement(
         db,
         user_idF=user_id,

@@ -21,7 +21,7 @@ db.query(User).delete()
 db.commit()
 
 # Criar usuário de teste
-new_user = create_user(db, username="admin", password="admin123", role="ADMIN")
+new_user = create_user(db, username="admin", email="admin@hotmail.com", password="admin123", role="ADMIN")
 
 # Criar produto de teste
 new_product = create_product(
