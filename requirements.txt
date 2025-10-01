@@ -11,3 +11,6 @@ fastapi>=0.111
 uvicorn[standard]>=0.30
 pydantic>=2.7
 typing_extensions>=4.12.2
+
+# Agente
+openai
