@@ -18,6 +18,7 @@ from database.services import (
     get_user_by_username
 )
 
+
 # NOVO: criar tabelas
 from database.database import Base, engine
 
