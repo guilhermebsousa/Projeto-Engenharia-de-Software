@@ -6,7 +6,7 @@ from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from api.schemas import SignupIn
-from api.schemas import LoginIn, UserOut, ProductIn, ProductOut, MovementIn
+from api.schemas import LoginIn, UserOut, ProductIn, ProductOut, MovementIn, ChatbotQuestionIn, ChatbotResponseOut
 from api.deps import get_db
 from database.models.users import RoleEnum, User
 from database.models.products import Product
@@ -24,6 +24,12 @@ from database.database import Base, engine
 
 # NOVO: leitor de código
 from barcode_scanner.scanner import get_barcode
+
+# NOVO: agente AI
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from agent.ai_stock_agent import AIStockAgent
 
 app = FastAPI(title="sTOK API")
 
@@ -248,6 +254,28 @@ def scan_barcode(user_id: str, db: Session = Depends(get_db)):
             },
         }
     return {"barcode": code, "product": None}
+
+# ---- CHATBOT AI ----
+@app.post("/api/users/{user_id}/chatbot", response_model=ChatbotResponseOut)
+def chatbot_question(user_id: str, payload: ChatbotQuestionIn, db: Session = Depends(get_db)):
+    """Endpoint para processar perguntas do chatbot AI"""
+    try:
+        # Inicializar o agente AI
+        agent = AIStockAgent()
+        
+        # Processar a pergunta
+        response = agent.process_question(payload.question)
+        
+        return ChatbotResponseOut(
+            response=response,
+            success=True
+        )
+    except Exception as e:
+        return ChatbotResponseOut(
+            response="Desculpe, ocorreu um erro ao processar sua pergunta. Tente novamente.",
+            success=False,
+            error=str(e)
+        )
 
 # SERVIR O FRONTEND
 

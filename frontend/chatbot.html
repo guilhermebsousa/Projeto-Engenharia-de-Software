@@ -208,8 +208,10 @@
     }
 
     // ===== Respostas =====
-    function responderPergunta(q){
+    async function responderPergunta(q){
       const nq = normalizar(q);
+      
+      // Comandos especiais que não precisam do AI
       if (/^listar( produtos)?$/.test(nq)){
         const top = produtos.slice(0, Math.min(produtos.length, 10)).map(p=>`• ${p.name} (${p.brand||'—'}) — ${p.current_quantity??0} ${p.unit||'un'}`).join('\n');
         return top ? `Alguns produtos:\n${top}` : 'Você ainda não possui produtos cadastrados.';
@@ -218,30 +220,59 @@
         return '__SCAN__'; // marcador para fluxo assíncrono
       }
 
-      // Perguntas por estoque/quantidade
-      if (/(quanto|qtd|quantidade).*(temos|de|do|da)/.test(nq)){
-        const p = acharProdutoPergunta(q); if (p) return `Temos ${p.current_quantity ?? 0} ${p.unit || 'un'} de ${p.name}.`;
-      }
-      // Perguntas por preço
-      if (/(preco|preço)/.test(nq)){
-        const p = acharProdutoPergunta(q); if (p) return `Preço sugerido de ${p.name}: R$ ${(p.suggested_price ?? 0).toFixed(2)}.`;
-      }
-      // Totais e destaques
-      if (/total.*(estoque|itens)/.test(nq) || /(estoque total|total de itens)/.test(nq)){
-        return `O total em estoque é de ${totalEstoque()} unidades.`;
-      }
-      if (/(maior|mais).*(estoque)/.test(nq)){
-        const p = produtoMaiorEstoque(); return p ? `${p.name} tem o MAIOR estoque: ${p.current_quantity ?? 0} ${p.unit||'un'}.` : 'Sem produtos.';
-      }
-      if (/(menor|menos).*(estoque)/.test(nq)){
-        const p = produtoMenorEstoque(); return p ? `${p.name} tem o MENOR estoque: ${p.current_quantity ?? 0} ${p.unit||'un'}.` : 'Sem produtos.';
-      }
+      // Para todas as outras perguntas, usar o agente AI
+      try {
+        const url = `${API_BASE}/api/users/${user.id}/chatbot`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            question: q
+          })
+        });
 
-      // Fallback: tenta achar produto
-      const p = acharProdutoPergunta(q);
-      if (p) return `${p.name}: ${p.current_quantity ?? 0} ${p.unit||'un'} em estoque; preço sugerido R$ ${(p.suggested_price ?? 0).toFixed(2)}.`;
+        if (!response.ok) {
+          throw new Error(`Erro na API: ${response.status}`);
+        }
 
-      return 'Não encontrei essa informação agora. Tente mencionar o nome do produto ou digite “listar produtos”.';
+        const data = await response.json();
+        
+        if (data.success) {
+          return data.response;
+        } else {
+          return data.response || 'Erro ao processar sua pergunta.';
+        }
+      } catch (error) {
+        console.error('Erro ao consultar agente AI:', error);
+        
+        // Fallback para lógica local em caso de erro
+        // Perguntas por estoque/quantidade
+        if (/(quanto|qtd|quantidade).*(temos|de|do|da)/.test(nq)){
+          const p = acharProdutoPergunta(q); if (p) return `Temos ${p.current_quantity ?? 0} ${p.unit || 'un'} de ${p.name}.`;
+        }
+        // Perguntas por preço
+        if (/(preco|preço)/.test(nq)){
+          const p = acharProdutoPergunta(q); if (p) return `Preço sugerido de ${p.name}: R$ ${(p.suggested_price ?? 0).toFixed(2)}.`;
+        }
+        // Totais e destaques
+        if (/total.*(estoque|itens)/.test(nq) || /(estoque total|total de itens)/.test(nq)){
+          return `O total em estoque é de ${totalEstoque()} unidades.`;
+        }
+        if (/(maior|mais).*(estoque)/.test(nq)){
+          const p = produtoMaiorEstoque(); return p ? `${p.name} tem o MAIOR estoque: ${p.current_quantity ?? 0} ${p.unit||'un'}.` : 'Sem produtos.';
+        }
+        if (/(menor|menos).*(estoque)/.test(nq)){
+          const p = produtoMenorEstoque(); return p ? `${p.name} tem o MENOR estoque: ${p.current_quantity ?? 0} ${p.unit||'un'}.` : 'Sem produtos.';
+        }
+
+        // Fallback: tenta achar produto
+        const p = acharProdutoPergunta(q);
+        if (p) return `${p.name}: ${p.current_quantity ?? 0} ${p.unit||'un'} em estoque; preço sugerido R$ ${(p.suggested_price ?? 0).toFixed(2)}.`;
+
+        return 'Não consegui processar sua pergunta no momento. Verifique se o servidor está funcionando ou tente novamente.';
+      }
     }
 
     // ===== Histórico (visual) =====
@@ -270,7 +301,7 @@
         // garante dados atualizados
         if (!produtos.length) await carregarProdutos();
 
-        const resp = responderPergunta(txt);
+        const resp = await responderPergunta(txt);
         if (resp === '__SCAN__'){
           addRow('Abrindo leitor de código no servidor…', 'bot');
           try {

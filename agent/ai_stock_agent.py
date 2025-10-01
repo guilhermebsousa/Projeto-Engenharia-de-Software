@@ -3,6 +3,10 @@ import sys
 import openai
 from sqlalchemy.orm import Session
 from sqlalchemy import text
+from dotenv import load_dotenv
+
+# Carregar variáveis de ambiente do arquivo .env
+load_dotenv()
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 

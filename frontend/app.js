@@ -3,26 +3,30 @@
   const btn = document.getElementById('menuBtn');
   const menu = document.getElementById('menuList');
 
-  function setOpen(open) {
-    menu.dataset.open = open ? "true" : "false";
-    btn.setAttribute('aria-expanded', open ? "true" : "false");
+  if (btn && menu) {
+    function setOpen(open) {
+      menu.dataset.open = open ? "true" : "false";
+      btn.setAttribute('aria-expanded', open ? "true" : "false");
+    }
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setOpen(menu.dataset.open !== "true");
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!menu.contains(e.target) && e.target !== btn) setOpen(false);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') setOpen(false);
+    });
   }
-
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    setOpen(menu.dataset.open !== "true");
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!menu.contains(e.target) && e.target !== btn) setOpen(false);
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') setOpen(false);
-  });
 })();
 
-document.getElementById('loginForm').addEventListener('submit', async function (e) {
+const loginForm = document.getElementById('loginForm');
+if (loginForm) {
+  loginForm.addEventListener('submit', async function (e) {
   e.preventDefault();
   const username = this.login.value.trim();
   const password = this.senha.value.trim();
@@ -53,17 +57,23 @@ document.getElementById('loginForm').addEventListener('submit', async function (
     console.error(err);
     alert('Não foi possível conectar à API. Verifique se o backend está rodando.');
   }
-});
-
+  });
+}
 
 // Ações de links auxiliares (placeholders)
-document.getElementById('forgot').addEventListener('click', (e) => {
-  e.preventDefault();
-  alert('Fluxo de recuperação de senha em breve.');
-});
+const forgotElement = document.getElementById('forgot');
+if (forgotElement) {
+  forgotElement.addEventListener('click', (e) => {
+    e.preventDefault();
+    alert('Fluxo de recuperação de senha em breve.');
+  });
+}
 
 // Botão voltar
-document.getElementById('btnBack').onclick = () => window.location.href = '/editar.html';
+const btnBack = document.getElementById('btnBack');
+if (btnBack) {
+  btnBack.onclick = () => window.location.href = '/editar.html';
+}
 
 // Carregar dados do produto
 const params = new URLSearchParams(window.location.search);
@@ -83,7 +93,9 @@ async function carregarProduto() {
 carregarProduto();
 
 // Salvar alterações
-document.getElementById('formEditarProduto').addEventListener('submit', async function (e) {
+const formEditarProduto = document.getElementById('formEditarProduto');
+if (formEditarProduto) {
+  formEditarProduto.addEventListener('submit', async function (e) {
   e.preventDefault();
   const dados = Object.fromEntries(new FormData(this));
 
@@ -103,11 +115,12 @@ document.getElementById('formEditarProduto').addEventListener('submit', async fu
     body: JSON.stringify(dados)
   });
 
-  if (r.ok) {
-    alert('Produto atualizado!');
-    window.location.href = '/editar.html';
-  } else {
-    const error = await r.json().catch(() => ({ detail: 'Erro ao conectar com a API.' }));
-    alert(`Erro ao atualizar produto: ${error.detail}`);
-  }
-});
+    if (r.ok) {
+      alert('Produto atualizado!');
+      window.location.href = '/editar.html';
+    } else {
+      const error = await r.json().catch(() => ({ detail: 'Erro ao conectar com a API.' }));
+      alert(`Erro ao atualizar produto: ${error.detail}`);
+    }
+  });
+}

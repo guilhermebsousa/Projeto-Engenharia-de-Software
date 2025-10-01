@@ -41,3 +41,11 @@ class MovementIn(BaseModel):
     sale_price: Optional[float] = None
     note: Optional[str] = None
     expiration_date: Optional[datetime] = None
+
+class ChatbotQuestionIn(BaseModel):
+    question: str
+
+class ChatbotResponseOut(BaseModel):
+    response: str
+    success: bool = True
+    error: Optional[str] = None
